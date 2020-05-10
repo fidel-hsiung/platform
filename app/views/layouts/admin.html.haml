@@ -5,7 +5,12 @@
     %title Platform
     = csrf_meta_tags
     = csp_meta_tag
-    = stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload'
-    = javascript_pack_tag 'admin', 'data-turbolinks-track': 'reload'
+    = stylesheet_pack_tag 'style', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload'
   %body
-    = yield
+    .container
+      .row.min-vh-100
+        .col-6
+          = image_pack_tag
+        .col-6
+          = yield

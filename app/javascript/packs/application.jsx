@@ -1,7 +1,7 @@
 import React from 'react'
 import { render } from 'react-dom'
 import PropTypes from 'prop-types'
-import Button from 'react-bootstrap/Button';
+import App from 'components/App'
 
 const Hello = props => (
   <Button variant="primary">Hello {props.name}!</Button>
@@ -17,7 +17,7 @@ Hello.propTypes = {
 
 document.addEventListener('DOMContentLoaded', () => {
   render(
-    <Hello name="React" />,
+    <App name="React" />,
     document.body.appendChild(document.createElement('main')),
   )
 })
