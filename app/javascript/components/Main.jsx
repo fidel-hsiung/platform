@@ -1,9 +1,10 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import DashboardPage from 'components/DashboardPage';
+import JobsPage from 'components/JobsPage';
 import LoginPage from 'components/LoginPage';
 import Header from 'components/Header';
+import LeftSideNav from 'components/LeftSideNav';
 import VerifyToken from 'components/VerifyToken';
 
 export default function Main(props) {
@@ -15,10 +16,13 @@ export default function Main(props) {
     return(
       <React.Fragment>
         <Header />
-        <Switch>
-          <Route exact path="/" component={DashboardPage} />
-          <Route path="/login" render={() => <Redirect to="/" />} />
-        </Switch>
+        <div className='authenticated-page'>
+          <LeftSideNav />
+          <Switch>
+            <Route exact path="/" component={JobsPage} />
+            <Route path="/login" render={() => <Redirect to="/" />} />
+          </Switch>
+        </div>
       </React.Fragment>
     );
   } else {

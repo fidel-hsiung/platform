@@ -1,3 +1,39 @@
+main
+  display: flex
+  flex-flow: column
+  min-height: 100vh
+  .header
+    flex: 0 1 auto
+    .header-avatar
+      margin-left: 10px
+      height: 40px
+  .authenticated-page
+    flex: 1 1 auto
+    display: flex
+    .left-side-nav
+      width: 250px
+      display: flex
+      flex-direction: column
+      background: #333333
+      a
+        height: 40px
+        width: 100%
+        display: flex
+        justify-content: flex-start
+        align-items: center
+        padding-left: 50px
+        color: $white
+        font-size: 18px
+        &:hover
+          background: #555555
+        &.active
+          font-weight: bold
+          background: #262626
+    .page-main-content
+      width: 100%
+      min-height: 100%
+      padding: $spacer
+
 .login-page
   min-height: 100vh
   display: flex
