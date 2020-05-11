@@ -10,7 +10,6 @@ export default function VerifyToken(props) {
   const dispatch = useDispatch()
 
   useEffect(() => {
-    console.log(props.authToken);
     fetch('/api/v1/user-info', {
       method: 'GET',
       headers: {
@@ -19,7 +18,6 @@ export default function VerifyToken(props) {
     })
     .then(response => response.json())
     .then(data => {
-      console.log(data);
       if (data.error) {
         localStorage.removeItem('authToken');
         sessionStorage.removeItem('authToken');

@@ -1,4 +1,5 @@
 export const LOGIN = 'LOGIN';
+export const LOGOUT = 'LOGOUT';
 export const UPDATE_AVATAR = 'UPDATE_AVATAR';
 
 export const REFRESH_TOKEN = 'REFRESH_TOKEN';

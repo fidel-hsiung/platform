@@ -2,10 +2,12 @@ import React from 'react';
 import { Navbar, Image } from 'react-bootstrap';
 import { BsBoxArrowRight } from 'react-icons/bs';
 import { useSelector, useDispatch } from 'react-redux';
+import { logout } from 'actions/currentUserActions';
 
 export default function App(props) {
 
   const currentUser = useSelector(state => state.currentUser);
+  const dispatch = useDispatch();
 
   return(
     <Navbar className="header" bg="dark" variant="dark">
@@ -18,7 +20,7 @@ export default function App(props) {
           </u>
           <img className={'header-avatar'} src={currentUser.avatar_url}></img>
         </Navbar.Text>
-        <BsBoxArrowRight size={28} color={'white'} style={{cursor: 'pointer'}}/>
+        <BsBoxArrowRight size={28} color={'white'} style={{cursor: 'pointer'}} onClick={()=>dispatch(logout())} />
       </Navbar.Collapse>
     </Navbar>
   );
