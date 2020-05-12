@@ -14,21 +14,20 @@ main
       width: 250px
       display: flex
       flex-direction: column
-      background: #333333
+      background: $sidenav-bg-color
       a
         height: 40px
         width: 100%
-        display: flex
-        justify-content: flex-start
-        align-items: center
+        +flex(flex-start, center)
         padding-left: 50px
         color: $white
         font-size: 18px
         &:hover
-          background: #555555
+          +hover-action()
+          background: $sidenav-hover
         &.active
           font-weight: bold
-          background: #262626
+          background: $sidenav-active
     .page-main-content
       width: 100%
       min-height: 100%
@@ -41,10 +40,8 @@ main
   .login-left
     flex: 0 0 50%
     max-width: 50%
-    background-image: linear-gradient($white, #FCFCFC, $gray)
-    display: flex
-    align-items: center
-    justify-content: center
+    background-image: linear-gradient($white, $login-bg-color, $gray)
+    +flex()
     img.logo
       height: 200px
       width: auto
@@ -52,9 +49,7 @@ main
   .login-right
     flex: 0 0 50%
     max-width: 50%
-    display: flex
-    align-items: center
-    justify-content: center
+    +flex()
     .user-panel
       width: 100%
       height: fit-content
@@ -67,6 +62,4 @@ main
 
 .loading-page
   min-height: 100vh
-  display: flex
-  align-items: center
-  justify-content: center
+  +flex()

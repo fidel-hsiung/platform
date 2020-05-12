@@ -1,0 +1,16 @@
+@mixin transform($transform) 
+  -webkit-transform: $transform
+  -moz-transform: $transform
+  -ms-transform: $transform
+  transform: $transform
+
+@mixin flex($justify: center, $align: center, $dir: row, $is_wrap: nowrap)
+  display: flex
+  justify-content: $justify
+  align-items: $align
+  flex-direction: $dir
+  flex-wrap: $is_wrap
+
+@mixin hover-action()
+  +transform(translate(0, -1px))
+  transition: all 0.3s ease 0s
