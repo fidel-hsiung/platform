@@ -3,6 +3,7 @@ import { Redirect } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { login } from 'actions/currentUserActions';
 import LoadingPage from 'components/LoadingPage';
+import { processResponse } from 'middlewares/custom';
 
 export default function VerifyToken(props) {
 
@@ -13,21 +14,17 @@ export default function VerifyToken(props) {
     fetch('/api/v1/user-info', {
       method: 'GET',
       headers: {
-        'X-USER-AUTH-TOKEN': props.authToken
+        'X-USER-AUTH-TOKEN': localStorage.getItem('authToken')
       }
     })
-    .then(response => response.json())
-    .then(data => {
-      if (data.error) {
-        localStorage.removeItem('authToken');
-        sessionStorage.removeItem('authToken');
-        setRedirect(true)
-      } else {
-        dispatch(login(data.attributes))
-      }
+    .then(processResponse)
+    .then(response => {
+      dispatch(login(response.data));
     })
-    .catch((error) => {
-      console.log('Error:', error);
+    .catch(response => {
+      console.log('test');
+      localStorage.removeItem('authToken');
+      setRedirect(true)
     });
   }, [])
 

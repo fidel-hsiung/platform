@@ -13,6 +13,29 @@ class Api::V1::BaseController < ActionController::API
   before_action :authenticate!
   before_action :load_data
 
+
+  rescue_from Exception do |exception|
+    if Rails.env.in? %w(staging production)
+      ExceptionNotifier.notify_exception(exception, env: request.env)
+    else
+      p "------ Error: "
+      p ">>>>>> #{exception.inspect} <<<<<<"
+      p "------"
+    end
+    error!({error: ['Server error.']}, 500)
+  end
+
+  rescue_from StandardError do |error|
+    if Rails.env.in? %w(staging production)
+      ExceptionNotifier.notify_exception(error, env: request.env)
+    else
+      p "------ Error: "
+      p ">>>>>> #{error.inspect} <<<<<<"
+      p "------"
+    end
+    error!({error: ['Sorry something went wrong.']}, 500)
+  end
+
   rescue_from ActiveRecord::RecordNotFound do |error|
     error!({error: ['Could not find the object.']}, 404)
   end

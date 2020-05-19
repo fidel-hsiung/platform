@@ -3,6 +3,7 @@ import {Form, Button} from 'react-bootstrap';
 import { useDispatch } from "react-redux";
 import { openModalBox } from 'actions/modalBoxActions';
 import { login } from 'actions/currentUserActions';
+import { processResponse } from 'middlewares/custom';
 
 export default function FormExample(props) {
 
@@ -26,22 +27,14 @@ export default function FormExample(props) {
       },
       body: JSON.stringify(data)
     })
-    .then(response => response.json())
-    .then(data => {
-      if (data.error) {
-        dispatch(openModalBox('Login failed', data.error.join(',')));
-        setPassword('');
-      } else {
-        if (data.remember_me) {
-          localStorage.setItem('authToken', data.auth_token);
-        } else {
-          sessionStorage.setItem('authToken', data.auth_token);
-        }
-        dispatch(login(data.user.attributes))
-      }
+    .then(processResponse)
+    .then(response => {
+      localStorage.setItem('authToken', response.data.auth_token);
+      dispatch(login(response.data.user))
     })
-    .catch((error) => {
-      console.log('Error:', error);
+    .catch(response => {
+      dispatch(openModalBox('Login failed', response.data.error.join(',')));
+      setPassword('');
     });
   }
 
@@ -67,7 +60,6 @@ export default function FormExample(props) {
           />
         </Form.Group>
         <Form.Check
-          required
           name="rememberMe"
           label="Remember me"
           onChange={e=>setRememberMe(e.target.checked)}

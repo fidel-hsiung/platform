@@ -6,3 +6,5 @@ export const REFRESH_TOKEN = 'REFRESH_TOKEN';
 
 export const POPUP = 'POPUP';
 export const CLOSE = 'CLOSE';
+
+export const REFRESH_CALENDAR = 'REFRESH_CALENDAR';

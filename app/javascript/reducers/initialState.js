@@ -10,5 +10,6 @@ export default {
   	show:          false,
   	title:         '',
   	content:       ''
-  }
+  },
+  refreshCalendar: false
 }

@@ -10,7 +10,6 @@ import VerifyToken from 'components/VerifyToken';
 export default function Main(props) {
 
   const authenticated = useSelector(state => state.currentUser.email != null);
-  const authToken = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
 
   if (authenticated) {  
     return(
@@ -26,17 +25,16 @@ export default function Main(props) {
       </React.Fragment>
     );
   } else {
-    if (authToken) {
+    if (localStorage.getItem('authToken')) {
       return(
         <Switch>
-          <Route path="*" render={(props) => <VerifyToken {...props} authToken={authToken} />} />
+          <Route path="*" component={VerifyToken} />
         </Switch>
       );
     } else {
       return(
         <Switch>
           <Route exact path="/login" component={LoginPage} />
-          <Route path="/loading" component={VerifyToken} />
           <Route path="*" render={() => <Redirect to="/login" />} />
         </Switch>
       );
