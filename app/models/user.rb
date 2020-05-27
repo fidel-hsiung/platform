@@ -3,6 +3,7 @@ class User < ApplicationRecord
   has_one_customized_attached :avatar, default: 'media/images/default-user.png'
 
   has_many :jobs
+  has_many :user_jobs
   has_many :assigned_jobs, through: :user_jobs, source: :job
 
   validates_presence_of :email, :first_name, :last_name

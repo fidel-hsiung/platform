@@ -6,6 +6,8 @@ import LoginPage from 'components/LoginPage';
 import Header from 'components/Header';
 import LeftSideNav from 'components/LeftSideNav';
 import VerifyToken from 'components/VerifyToken';
+import JobModal from 'components/JobModal';
+import JobView from 'components/JobView';
 
 export default function Main(props) {
 
@@ -15,6 +17,8 @@ export default function Main(props) {
     return(
       <React.Fragment>
         <Header />
+        <JobModal />
+        <JobView />
         <div className='authenticated-page'>
           <LeftSideNav />
           <Switch>

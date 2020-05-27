@@ -21,7 +21,8 @@
 .byebug_history
 
 # Ignore master key for decrypting credentials and more.
-/config/credentials/production.rb.key
+/config/credentials/production.key
+/config/credentials/development.key
 
 /public/packs
 /public/packs-test

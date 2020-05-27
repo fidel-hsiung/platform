@@ -1,0 +1,101 @@
+.info-group
+  display: flex
+  padding: $spacer/2 0
+  .info-label
+    flex: 0 0 25%
+    padding-right: $spacer/2
+    font-weight: bold
+  .info-content
+    padding-left: $spacer/2
+    overflow-x: hidden
+    display: flex
+    flex: auto
+    flex-flow: wrap
+    align-items: center
+    &.image-content
+      padding-left: 0
+      margin-left: $spacer/2
+      overflow: auto
+      padding-bottom: 4px
+    &::-webkit-scrollbar
+      -webkit-appearance: none
+      height: 8px
+    &::-webkit-scrollbar-track
+      border: 1px solid $black 
+      border-radius: 5px
+    &::-webkit-scrollbar-thumb
+      border-radius: 5px
+      background-color: $black
+
+
+.job-form-modal
+  .form-group
+    .react-datepicker-wrapper
+      width: 100%
+    .error
+      width: 100%
+      margin-top: 0.25rem
+      font-size: 80%
+      color: $red
+
+
+.input-with-autocomplete
+  position: relative
+  .autocomplete-dropdown-container
+    position: absolute
+    width: 100%
+    z-index: 13
+    > div:first-child
+      border-top: 1px solid $light-gray
+    > div:last-child
+      border-bottom: 1px solid $light-gray
+      border-bottom-left-radius: 0.25rem
+      border-bottom-right-radius: 0.25rem
+    .loading
+      display: none
+    .suggestion-item, .suggestion-item--active
+      border-left: 1px solid $light-gray
+      border-right: 1px solid $light-gray
+      padding: 2px 10px
+      p
+        margin: 0
+
+
+.quill
+  .ql-toolbar
+    border-top-right-radius: 0.25rem
+    border-top-left-radius: 0.25rem
+    .ql-picker-options .ql-picker-item
+      line-height: 1.2
+  .ql-container
+    border-bottom-right-radius: 0.25rem
+    border-bottom-left-radius: 0.25rem
+    .ql-editor
+      min-height: 300px
+      max-height: 500px
+      overflow-y: auto
+      &::-webkit-scrollbar
+        -webkit-appearance: none
+        width: 8px
+      &::-webkit-scrollbar-thumb
+        background-color: $border
+
+  &.is-invalid
+    .ql-toolbar
+      border-color: $red
+    .ql-container
+      border-color: $red
+
+.richtext-content
+  max-height: 300px
+  &::-webkit-scrollbar
+    -webkit-appearance: none
+    width: 8px
+  &::-webkit-scrollbar-track
+    border: 1px solid $black
+    border-radius: 5px
+  &::-webkit-scrollbar-thumb
+    border-radius: 5px
+    background-color: $black
+  h1, h2, h3, h4, h5, h6, p
+    margin-bottom: 0

@@ -22,7 +22,6 @@ export default function VerifyToken(props) {
       dispatch(login(response.data));
     })
     .catch(response => {
-      console.log('test');
       localStorage.removeItem('authToken');
       setRedirect(true)
     });

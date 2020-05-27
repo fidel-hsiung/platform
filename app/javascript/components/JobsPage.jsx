@@ -1,23 +1,24 @@
 import React from 'react';
-import { Form } from 'react-bootstrap';
-import Select from 'react-select';
+import { Form, Button } from 'react-bootstrap';
 import { BsFillCaretLeftFill, BsFillCaretRightFill } from 'react-icons/bs';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import { processResponse } from 'middlewares/custom';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { openModalBox } from 'actions/modalBoxActions';
+import { newJob, viewJob } from 'actions/jobActions';
 import { logout } from 'actions/currentUserActions';
+import { setCalendarDates } from 'actions/calendarActions';
 
 function mapStateToProps(state){
   return{
-    refreshCalendar: state.refreshCalendar,
+    refreshCalendar: state.calendar.refreshCalendar,
   }
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({openModalBox, logout}, dispatch)
+  return bindActionCreators({openModalBox, newJob, viewJob, logout, setCalendarDates}, dispatch)
 }
 
 moment.updateLocale('en', {
@@ -36,7 +37,7 @@ class JobsPage extends React.Component {
     this.state = {
       calendarDay: new Date(),
       jobs: [],
-      statuses: []
+      statuses: ['active', 'finished', 'failed']
     };
   }
 
@@ -64,6 +65,7 @@ class JobsPage extends React.Component {
         calendarDay: date,
         jobs: response.data.jobs
       });
+      this.props.setCalendarDates(response.data.calendar_dates);
     })
     .catch(response => {
 			if (response.status == 401){
@@ -76,13 +78,9 @@ class JobsPage extends React.Component {
 
   filteredJobs(){
     const statuses = this.state.statuses;
-    if (statuses.length == 0){
-      return this.state.jobs;
-    } else{    
-      return this.state.jobs.filter(job => {
-        return statuses.includes(job.status);
-      });
-    }
+    return this.state.jobs.filter(job => {
+      return statuses.includes(job.status);
+    });
   }
 
   handleCheckboxClick(e){
@@ -129,22 +127,30 @@ class JobsPage extends React.Component {
     );
   }
 
-  eventStyleGetter(event, start, end, isSelected) {
-    console.log(event);
-    var status = event.status;
+  eventStyleGetter(jobs, start, end, isSelected) {
+    var status = jobs.status;
     return {
       className: status
     };
   }
 
+  viewJob(job, e){
+    this.props.viewJob(job.id)
+  }
+
 	render() {
 	  return(
 	  	<div className='page-main-content calendar-page'>
-        <div className='job-filter'>
-          <div className='filter-title'>Job Filter:</div>
-          <Form.Check name='active' className='text-danger' inline label='active' onChange={e=>this.handleCheckboxClick(e)} checked={this.state.statuses.includes('active')} />
-          <Form.Check name='finished' className='text-success' inline label='finished' onChange={e=>this.handleCheckboxClick(e)} checked={this.state.statuses.includes('finished')} />
-          <Form.Check name='failed' className='text-secondary' inline label='failed' onChange={e=>this.handleCheckboxClick(e)} checked={this.state.statuses.includes('failed')} />
+        <div className='calendar-tool-container'>
+          <div className='job-filter'>
+            <div className='filter-title'>Job Filter:</div>
+            <Form.Check name='active' className='text-danger' inline label='active' onChange={e=>this.handleCheckboxClick(e)} checked={this.state.statuses.includes('active')} />
+            <Form.Check name='finished' className='text-success' inline label='finished' onChange={e=>this.handleCheckboxClick(e)} checked={this.state.statuses.includes('finished')} />
+            <Form.Check name='failed' className='text-secondary' inline label='failed' onChange={e=>this.handleCheckboxClick(e)} checked={this.state.statuses.includes('failed')} />
+          </div>
+          <Button variant="info" onClick={() => this.props.newJob()}>
+            Create New Job
+          </Button>
         </div>
 		    <Calendar
 		      className='jobs-calendar'
@@ -159,7 +165,8 @@ class JobsPage extends React.Component {
               toolbar: this.customToolbar.bind(this),
             }
           }
-          eventPropGetter={(this.eventStyleGetter)}
+          eventPropGetter={this.eventStyleGetter}
+          onSelectEvent={(job, e) => this.viewJob(job, e)}
 		    />
 		  </div>
 	  );
