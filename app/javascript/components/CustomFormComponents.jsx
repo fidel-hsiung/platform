@@ -19,7 +19,6 @@ export function FormInput (props) {
 }
 
 export function FormSelect (props) {
-
   return(
     <Form.Group as={Row}>
       <Form.Label column sm='3'>{props.label}</Form.Label>
@@ -39,7 +38,6 @@ export function FormSelect (props) {
 }
 
 export function FormAddress (props) {
-
   return(
     <Form.Group as={Row}>
       <Form.Label column sm='3'>{props.label}</Form.Label>
@@ -92,7 +90,6 @@ export function FormAddress (props) {
 }
 
 export function FormDatePicker (props) {
-
   return(
     <Form.Group as={Row}>
       <Form.Label column sm='3'>{props.label}</Form.Label>
@@ -104,8 +101,29 @@ export function FormDatePicker (props) {
   );
 }
 
+export function FormAttendeesSelect (props) {
+  return(
+    <Form.Group as={Row}>
+      <Form.Label column sm='3'>{props.label}</Form.Label>
+      <Col sm='9'>
+        <Select
+          value={props.options.filter(user => {return props.value.indexOf(user.id) != -1})}
+          options={props.options}
+          isMulti
+          getOptionLabel={(data)=>{return data.full_name;}}
+          getOptionValue={(data)=>{return data.id}}
+          onChange={e => props.handleChange(e)}
+          placeholder={props.placeholder}
+          className="basic-multi-select"
+          classNamePrefix="select"
+        />
+        <div className='error'>{props.error}</div>
+      </Col>
+    </Form.Group>
+  );
+}
+
 export function FormRichTextInput (props) {
- 
   return(
     <Form.Group as={Row}>
       <Form.Label column sm='3'>{props.label}</Form.Label>
@@ -120,5 +138,5 @@ export function FormRichTextInput (props) {
         <div className='error'>{props.error}</div>
       </div>
     </Form.Group>
-  ); 
+  );
 }

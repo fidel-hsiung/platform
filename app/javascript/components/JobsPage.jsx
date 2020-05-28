@@ -14,6 +14,7 @@ import { setCalendarDates } from 'actions/calendarActions';
 function mapStateToProps(state){
   return{
     refreshCalendar: state.calendar.refreshCalendar,
+    role: state.currentUser.role
   }
 }
 
@@ -148,9 +149,11 @@ class JobsPage extends React.Component {
             <Form.Check name='finished' className='text-success' inline label='finished' onChange={e=>this.handleCheckboxClick(e)} checked={this.state.statuses.includes('finished')} />
             <Form.Check name='failed' className='text-secondary' inline label='failed' onChange={e=>this.handleCheckboxClick(e)} checked={this.state.statuses.includes('failed')} />
           </div>
-          <Button variant="info" onClick={() => this.props.newJob()}>
-            Create New Job
-          </Button>
+          {this.props.role == 'admin' &&
+            <Button variant="info" onClick={() => this.props.newJob()}>
+              Create New Job
+            </Button>
+          }
         </div>
 		    <Calendar
 		      className='jobs-calendar'

@@ -1,6 +1,6 @@
 import React from 'react';
-import { Form, Modal, Button } from 'react-bootstrap';
-import { FormInput, FormSelect, FormAddress, FormDatePicker, FormRichTextInput } from 'components/CustomFormComponents';
+import { Form, Modal, Button, Row, Col } from 'react-bootstrap';
+import { FormInput, FormSelect, FormAddress, FormDatePicker, FormAttendeesSelect, FormRichTextInput } from 'components/CustomFormComponents';
 import moment from 'moment';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -12,7 +12,8 @@ import { processResponse } from 'middlewares/custom';
 function mapStateToProps(state){
   return{
     show: state.job.jobModalShow,
-    jobId: state.job.editJobId
+    jobId: state.job.editJobId,
+    refreshUsersCollection: state.user.refreshUsersCollection
   }
 }
 
@@ -46,8 +47,13 @@ class JobModal extends React.Component{
       errors: {}
     };
     this.state = {
-      job: Object.assign({}, this.emptyJob)
+      job: Object.assign({}, this.emptyJob),
+      users: []
     };
+  }
+
+  componentDidMount(){
+    this.getUsers();
   }
 
   componentDidUpdate(prevProps){
@@ -77,6 +83,34 @@ class JobModal extends React.Component{
         });
       }
     }
+
+    if (!this.props.show) {
+      if (this.props.refreshUsersCollection != prevProps.refreshUsersCollection) {
+        this.getUsers();
+      }
+    }
+  }
+
+  getUsers(){
+    fetch('/api/v1/users-collection', {
+      method: 'GET',
+      headers: {
+        'X-USER-AUTH-TOKEN': localStorage.getItem('authToken')
+      }
+    })
+    .then(processResponse)
+    .then(response => {
+      this.setState({
+        users: response.data.users
+      })
+    })
+    .catch(response => {
+      if (response.status == 401){
+        localStorage.removeItem('authToken');
+        this.props.logout();
+      }
+      this.props.openModalBox('Error', response.data.error.join(','));
+    });
   }
 
   handleInputChange(e){
@@ -99,6 +133,53 @@ class JobModal extends React.Component{
     this.setState({job: job});
   }
 
+  handleAttendeesChange(e){
+    console.log(e);
+    let job = this.state.job;
+    let temp_res = [];
+    if (e){
+      temp_res = e.map(user => user.id);
+    }
+    job.user_ids = temp_res;
+    let temp_user_jobs_attributes = job.user_jobs_attributes;
+    temp_user_jobs_attributes.map(temp_user_job => {
+      if (temp_res.indexOf(temp_user_job.user_id) == -1){
+        temp_user_job._destroy = true;
+      }
+    });
+    temp_res.map(user_id => {
+      if (!temp_user_jobs_attributes.some(obj => obj.user_id == user_id && obj._destroy == false)) {
+        let temp_user = this.state.users.find(function(u){return u.id == user_id});
+        temp_user_jobs_attributes.push({
+          id: null,
+          user_id: temp_user.id,
+          user_avatar_url: temp_user.avatar_url,
+          user_full_name: temp_user.full_name,
+          errors: {},
+          _destroy: false
+        });
+      }
+    });
+    job.user_jobs_attributes = temp_user_jobs_attributes;
+    this.setState({job: job});
+    console.log(this.state.job)
+  }
+
+  handleRemoveUser(user_id){
+    let job = this.state.job;
+    let temp_user_ids = job.user_ids;
+    temp_user_ids.splice(temp_user_ids.indexOf(user_id), 1);
+    job.user_ids = temp_user_ids;
+    let temp_user_jobs_attributes = job.user_jobs_attributes;
+    temp_user_jobs_attributes.map(user_job=>{
+      if (user_job.user_id == user_id){
+        user_job._destroy = true;
+      }
+    });
+    job.user_jobs_attributes = temp_user_jobs_attributes;
+    this.setState({job: job});
+  }
+
   handlePluginInputChange(e, name){
     let job = this.state.job;
     job[name] = e;
@@ -113,8 +194,12 @@ class JobModal extends React.Component{
     delete job['id'];
     delete job['errors'];
     delete job['users'];
+    delete job['user_ids'];
     job.user_jobs_attributes.forEach(user_job => {
       delete user_job['job_id'];
+      delete user_job['user_avatar_url'];
+      delete user_job['user_full_name'];
+      delete user_job['errors'];
     })
     const data = {job: job}
     const url = this.state.job.id == null ? '/api/v1/jobs' : '/api/v1/jobs/' + this.state.job.id
@@ -155,6 +240,22 @@ class JobModal extends React.Component{
     });
   }
 
+  renderAttendees(){
+    return this.state.job.user_jobs_attributes.map((user_job, index) => {
+      if (user_job._destroy == false) {
+        return(
+          <Col sm='6' key={index+'-'+user_job.id}>
+            <div className="user-name-pane">
+              <img className="avatar small" src={user_job.user_avatar_url}></img>
+              <div className="name">{user_job.user_full_name}</div>
+              <a className="form-close-button" onClick={()=>this.handleRemoveUser(user_job.user_id)}>&times;</a>
+            </div>
+          </Col>
+        );
+      }
+    })
+  }
+
   render(){
     return (
       <Modal className='job-form-modal' show={this.props.show} onHide={() => this.props.closeJobModal()} dialogClassName='modal-lg'>
@@ -165,10 +266,18 @@ class JobModal extends React.Component{
           <Modal.Body>
             <FormInput name='name' label='Name' placeholder='Enter job name' value={this.state.job.name} handleChange={e => this.handleInputChange(e)} error={this.state.job.errors.name} />
             <FormInput name='job_number' label='Job Number' placeholder='Enter job number' value={this.state.job.job_number} handleChange={e => this.handleInputChange(e)} error={this.state.job.errors.job_number} />
-            <FormSelect name='status' label='Status' placeholder='Select job status' options={[{value: 'pending', label: 'Pending'}, {value: 'active', label: 'Active'}, {value: 'finished', label: 'Finished'}, {value: 'failed', label: 'Failed'}]} value={this.state.job.status} handleChange={(e, name)=>this.handleSelectChange(e, name)} error={this.state.job.errors.status} />
+            <FormSelect name='status' label='Status' placeholder='Select job status' value={this.state.job.status} options={[{value: 'pending', label: 'Pending'}, {value: 'active', label: 'Active'}, {value: 'finished', label: 'Finished'}, {value: 'failed', label: 'Failed'}]} handleChange={(e, name)=>this.handleSelectChange(e, name)} error={this.state.job.errors.status} />
             <FormDatePicker name='start_date' label='Start Date' placeholder='Enter job start date' value={this.state.job.start_date} handleChange={(e, name)=>this.handleDateChange(e, name)} error={this.state.job.errors.start_date} />
             <FormDatePicker name='end_date' label='End Date' placeholder='Enter job end date' value={this.state.job.end_date} handleChange={(e, name)=>this.handleDateChange(e, name)} error={this.state.job.errors.end_date} />
             <FormAddress name='location' label='Location' placeholder='Enter job location' value={this.state.job.location} handleChange={(e, name) => this.handlePluginInputChange(e, name)} error={this.state.job.errors.location} />
+            <FormAttendeesSelect name='user_ids' label='Attendees' placeholder='Select job attendees' value={this.state.job.user_ids} options={this.state.users} handleChange={e => this.handleAttendeesChange(e)} error={this.state.job.errors.user_ids} />
+            <Row>
+              <Col sm={{span: 9, offset: 3}}>
+                <Row>
+                  {this.renderAttendees()}
+                </Row>
+              </Col>
+            </Row>
             <FormRichTextInput name='body' label='Note' placeholder='Enter job note' value={this.state.job.body} handleChange={(e, name)=>this.handlePluginInputChange(e, name)} error={this.state.job.errors.body} />
           </Modal.Body>
           <Modal.Footer>

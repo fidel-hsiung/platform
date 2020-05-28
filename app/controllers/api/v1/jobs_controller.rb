@@ -1,7 +1,7 @@
 class Api::V1::JobsController < Api::V1::BaseController
 
-	def index
-	end
+  def index
+  end
 
 	def calendar_jobs
     return error!({error: ['Date cannot be blank!']}, 422) unless params[:calendar_day].present?
@@ -17,7 +17,7 @@ class Api::V1::JobsController < Api::V1::BaseController
 	end
 
 	def edit
-		job = Job.includes(:user_jobs).find(params[:id])
+		job = Job.includes(users: {avatar_attachment: :blob}).find(params[:id])
 		render json: Api::V1::JobSerializer.new(job, params: {include_user_jobs_attributes: true}).to_custom_hash
 	end
 
@@ -37,7 +37,7 @@ class Api::V1::JobsController < Api::V1::BaseController
 
 	def update
 		job = Job.find(params[:id])
-    if job.update(job_params)
+    if job.update!(job_params)
     	if job.pending?
     		render json: {success: true}
     	else
@@ -51,7 +51,7 @@ class Api::V1::JobsController < Api::V1::BaseController
 	private
 
 	def job_params
-    params.require(:job).permit(:name, :status, :job_number, :location, :start_date, :end_date, :body, 
-      user_ids: [], user_jobs_attributes: [:id, :user_id, :_destroy])
+    params.require(:job).permit(:name, :status, :job_number, :location, :start_date, :end_date, :body,
+      user_jobs_attributes: [:id, :user_id, :_destroy])
 	end
 end

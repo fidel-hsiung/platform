@@ -58,6 +58,7 @@ class Api::V1::BaseController < ActionController::API
 
   def authenticate!
     return error!({error: ['Please login or signup']}, 401) unless current_user.present?
+    return error!({error: ["You don't have the permission!"]}, 401) if current_user.archived?
   end
 
   def load_data

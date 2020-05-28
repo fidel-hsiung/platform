@@ -5,7 +5,7 @@ import { processResponse } from 'middlewares/custom';
 import { closeJobModal, editJob } from 'actions/jobActions';
 import { openModalBox } from 'actions/modalBoxActions';
 import { logout } from 'actions/currentUserActions';
-import { InfoGroup, InfoGroupRichText } from 'components/CustomComponents';
+import { InfoGroup, InfoGroupAttendees, InfoGroupRichText } from 'components/CustomComponents';
 
 export default function JobView(props){
 
@@ -13,10 +13,11 @@ export default function JobView(props){
   const show = useSelector(state => state.job.jobViewShow);
   const jobId = useSelector(state => state.job.viewJobId);;
   const refreshJobView = useSelector(state => state.job.refreshJobView);
+  const role = useSelector(state => state.currentUser.role);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (jobId) {    
+    if (jobId) {
       const url = '/api/v1/jobs/' + jobId;
       fetch(url, {
         method: 'GET',
@@ -50,20 +51,22 @@ export default function JobView(props){
         <InfoGroup label='Date Range' content={job.start_date + ' to ' + job.end_date} />
         <InfoGroup label='Location' content={job.location} />
         {job.users &&
-          <InfoGroup label='Attendees' content={job.users.map(user => user.first_name + ' ' + user.last_name).join(', ')} />
+          <InfoGroupAttendees users={job.users} />
         }
         {job.body &&
           <InfoGroupRichText label='Note' content={job.body} />
         }
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="primary" onClick={() => dispatch(editJob(jobId))}>
-          Edit
-        </Button>
+        {role == 'admin' &&
+          <Button variant="primary" onClick={() => dispatch(editJob(jobId))}>
+            Edit
+          </Button>
+        }
         <Button variant="secondary" onClick={() => dispatch(closeJobModal())}>
           Close
         </Button>
       </Modal.Footer>
     </Modal>
-  ); 
+  );
 }

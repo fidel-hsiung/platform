@@ -3,7 +3,7 @@ class Api::V1::JobSerializer < Api::V1::BaseSerializer
   attributes :id, :job_number, :name, :location, :body, :status, :start_date, :end_date
 
   attribute :errors do |job, params|
-  	params[:include_error] ? job.errors.to_h : {}
+  	params[:include_errors] ? job.errors.to_h : {}
   end
 
   attribute :users do |job, params|
@@ -20,5 +20,9 @@ class Api::V1::JobSerializer < Api::V1::BaseSerializer
   	else
   		[]
   	end
+  end
+
+  attributes :user_ids do |job, params|
+    params[:include_user_jobs_attributes] ? job.users.ids : []
   end
 end
