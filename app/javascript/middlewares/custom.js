@@ -5,3 +5,11 @@ export const processResponse = (response) => {
     response.json().then(data => func({'status': response.status, 'data': data}));
   });
 }
+
+export const getDayFromHashParameter = (hash) => {
+  if (hash){
+    return hash.substr(1);
+  } else {
+    return '';
+  }
+}

@@ -14,6 +14,14 @@ class Api::V1::JobSerializer < Api::V1::BaseSerializer
   	end
   end
 
+  attribute :users_count do |job, params|
+    if params[:include_users]
+      job.users.size
+    else
+      0
+    end
+  end
+
   attributes :user_jobs_attributes do |job, params|
   	if params[:include_user_jobs_attributes]
   		Api::V1::UserJobSerializer.new(job.user_jobs).to_custom_hash
@@ -23,6 +31,10 @@ class Api::V1::JobSerializer < Api::V1::BaseSerializer
   end
 
   attributes :user_ids do |job, params|
-    params[:include_user_jobs_attributes] ? job.users.ids : []
+    if params[:include_user_jobs_attributes] || params[:include_users]
+      job.users.ids
+    else
+      []
+    end
   end
 end

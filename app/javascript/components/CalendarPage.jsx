@@ -31,7 +31,7 @@ moment.updateLocale('en', {
 const localizer = momentLocalizer(moment)
 
 
-class JobsPage extends React.Component {
+class CalendarPage extends React.Component {
 
   constructor(props){
     super(props);
@@ -43,6 +43,7 @@ class JobsPage extends React.Component {
   }
 
   componentDidMount(){
+    console.log(this.props.location);
     this.getCalendarEvents(this.state.calendarDay);
   }
 
@@ -135,10 +136,6 @@ class JobsPage extends React.Component {
     };
   }
 
-  viewJob(job, e){
-    this.props.viewJob(job.id)
-  }
-
 	render() {
 	  return(
 	  	<div className='page-main-content calendar-page'>
@@ -169,11 +166,11 @@ class JobsPage extends React.Component {
             }
           }
           eventPropGetter={this.eventStyleGetter}
-          onSelectEvent={(job, e) => this.viewJob(job, e)}
+          onSelectEvent={(job, e) => this.props.viewJob(job.id)}
 		    />
 		  </div>
 	  );
 	}
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(JobsPage);
+export default connect(mapStateToProps, mapDispatchToProps)(CalendarPage);

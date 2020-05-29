@@ -23,7 +23,9 @@ export default {
     jobViewShow:              false,
     jobViewId:                null,
     jobEditId:                null,
-    refreshJobView:           false
+    refreshJobView:           false,
+    refreshDayJobsList:       false,
+    refreshJobList:           false
   },
   user: {
     refreshUsersCollection:   false

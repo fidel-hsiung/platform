@@ -10,6 +10,7 @@ Rails.application.routes.draw do
       get     '/users-collection',                   to: 'users#users_collection'
 
   		get     '/calendar-jobs',                      to: 'jobs#calendar_jobs'
+      get     '/day-jobs',                           to: 'jobs#day_jobs'
       get     '/jobs/:id',                           to: 'jobs#show'
       post    '/jobs',                               to: 'jobs#create'
       get     '/jobs/:id/edit',                      to: 'jobs#edit'

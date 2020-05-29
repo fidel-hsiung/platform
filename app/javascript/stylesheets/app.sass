@@ -47,7 +47,6 @@ main
               display: inline-flex
             .form-check.form-check-inline
               margin-right: 1rem
-          .new-job-button
         .jobs-calendar
           .toolbar-container
             +flex(center, center)
@@ -62,6 +61,33 @@ main
               background-color: $success
             &.failed
               background-color: $secondary
+      &.day-page
+        .day-header
+          margin-bottom: 1rem
+          display: flex
+          justify-content: space-between
+          font-size: 20px
+          .day-tool-box
+            +flex(center, center)
+            font-size: 24px
+            .label-date
+              margin-left: 1rem
+              margin-right: 1rem
+          .form-check.form-check-inline
+            font-size: 15px
+        .table-responsive
+          thead
+            th
+              a
+                cursor: pointer
+          tbody
+            tr
+              cursor: pointer
+              td.attendees-td
+                img
+                  margin-right: 3px
+                  &:last-of-type
+                    margin-right: 0px
 
 .login-page
   min-height: 100vh

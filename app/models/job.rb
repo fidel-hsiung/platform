@@ -18,6 +18,7 @@ class Job < ApplicationRecord
   scope :upcoming, -> { where("start_date > ?", Date.current) }
   scope :delayed, -> { where("end_date < ? AND status = ?", Date.current, 1) }
   scope :calendar, -> (date) { where("start_date <= ? AND end_date >= ? AND status != ?", date.end_of_month.end_of_week, date.beginning_of_month.beginning_of_week, 0) }
+  scope :with_in_day, -> (date) { where("start_date <= ? AND end_date >= ? AND status != ?", date, date, 0) }
   scope :month, -> (date) { where("start_date <= ? AND end_date >= ?", date.end_of_month, date.beginning_of_month) }
 
   private

@@ -8,6 +8,9 @@ export default function LeftSideNav (props) {
       <NavLink exact activeClassName='active' to='/'>
         Dashboard
       </NavLink>
+      <NavLink activeClassName='active' to='/day'>
+        Day
+      </NavLink>
       <NavLink activeClassName='active' to='/jobs'>
         Jobs
       </NavLink>

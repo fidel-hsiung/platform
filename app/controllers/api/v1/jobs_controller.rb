@@ -11,6 +11,13 @@ class Api::V1::JobsController < Api::V1::BaseController
     render json: {jobs: Api::V1::JobSerializer.new(jobs).to_custom_hash, calendar_dates: {start_date: calendar_day.beginning_of_month.beginning_of_week, end_date: calendar_day.end_of_month.end_of_week}}
 	end
 
+  def day_jobs
+    day = params[:day].present? ? params[:day].to_date : Date.current
+    jobs = Job.includes(users: {avatar_attachment: :blob}).with_in_day(day)
+
+    render json: {jobs: Api::V1::JobSerializer.new(jobs, params: {include_users: true}).to_custom_hash, day: day}
+  end
+
 	def show
 		job = Job.includes(users: {avatar_attachment: :blob}).find(params[:id])
 		render json: Api::V1::JobSerializer.new(job, params: {include_users: true}).to_custom_hash

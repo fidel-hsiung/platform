@@ -1,7 +1,8 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import JobsPage from 'components/JobsPage';
+import CalendarPage from 'components/CalendarPage';
+import DayJobsPage from 'components/DayJobsPage';
 import LoginPage from 'components/LoginPage';
 import Header from 'components/Header';
 import LeftSideNav from 'components/LeftSideNav';
@@ -13,7 +14,7 @@ export default function Main(props) {
 
   const authenticated = useSelector(state => state.currentUser.email != null);
 
-  if (authenticated) {  
+  if (authenticated) {
     return(
       <React.Fragment>
         <Header />
@@ -22,7 +23,8 @@ export default function Main(props) {
         <div className='authenticated-page'>
           <LeftSideNav />
           <Switch>
-            <Route exact path="/" component={JobsPage} />
+            <Route exact path="/" component={CalendarPage} />
+            <Route exact path="/day" component={DayJobsPage} />
             <Route path="/login" render={() => <Redirect to="/" />} />
           </Switch>
         </div>
