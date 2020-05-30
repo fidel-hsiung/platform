@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { closeJobModal } from 'actions/jobActions';
 import { openModalBox } from 'actions/modalBoxActions';
-import { refreshCalendar, checkRefreshCalendar } from 'actions/calendarActions';
+import { checkJobRefresh } from 'actions/refreshControlsActions';
 import { processResponse } from 'middlewares/custom';
 
 function mapStateToProps(state){
@@ -18,7 +18,7 @@ function mapStateToProps(state){
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({closeJobModal, openModalBox, refreshCalendar, checkRefreshCalendar}, dispatch)
+  return bindActionCreators({closeJobModal, openModalBox, checkJobRefresh}, dispatch)
 }
 
 class JobModal extends React.Component{
@@ -134,7 +134,6 @@ class JobModal extends React.Component{
   }
 
   handleAttendeesChange(e){
-    console.log(e);
     let job = this.state.job;
     let temp_res = [];
     if (e){
@@ -162,7 +161,6 @@ class JobModal extends React.Component{
     });
     job.user_jobs_attributes = temp_user_jobs_attributes;
     this.setState({job: job});
-    console.log(this.state.job)
   }
 
   handleRemoveUser(user_id){
@@ -191,6 +189,10 @@ class JobModal extends React.Component{
     e.stopPropagation();
 
     let job = Object.assign({}, this.state.job);
+    job.user_jobs_attributes = [];
+    this.state.job.user_jobs_attributes.forEach(user_job => {
+      job.user_jobs_attributes.push(Object.assign({}, user_job));
+    })
     delete job['id'];
     delete job['errors'];
     delete job['users'];
@@ -215,14 +217,9 @@ class JobModal extends React.Component{
     })
     .then(processResponse)
     .then(response => {
-      console.log(response);
-      if (response.data.refresh) {
-        this.props.refreshCalendar()
-      } else if (response.data.start_date && response.data.end_date) {
-        const payload = {start_date: new Date(response.data.start_date), end_date: new Date(response.data.end_date)}
-        this.props.checkRefreshCalendar(payload);
-      }
+      this.props.checkJobRefresh(response.data);
       this.props.closeJobModal();
+      this.handleClearJob();
     })
     .catch(response => {
       if (response.status == 401){
@@ -256,6 +253,12 @@ class JobModal extends React.Component{
     })
   }
 
+  handleClearJob(){
+    let job = Object.assign({}, this.emptyJob);
+    job.user_jobs_attributes = [];
+    this.setState({job: job});
+  }
+
   render(){
     return (
       <Modal className='job-form-modal' show={this.props.show} onHide={() => this.props.closeJobModal()} dialogClassName='modal-lg'>
@@ -282,9 +285,8 @@ class JobModal extends React.Component{
           </Modal.Body>
           <Modal.Footer>
             <Button type="submit">Submit form</Button>
-            <Button variant="secondary" onClick={() => this.props.closeJobModal()}>
-              Close
-            </Button>
+            <Button variant="warning" onClick={() => this.handleClearJob()} >Clear</Button>
+            <Button variant="secondary" onClick={() => this.props.closeJobModal()}>Close</Button>
           </Modal.Footer>
         </Form>
       </Modal>

@@ -13,21 +13,20 @@ export default {
   	title:                    '',
   	content:                  ''
   },
-  calendar: {
-    refreshCalendar:          false,
-    calendar_start_day:       null,
-    calendar_end_day:         null
-  },
   job: {
     jobModalShow:             false,
     jobViewShow:              false,
     jobViewId:                null,
     jobEditId:                null,
-    refreshJobView:           false,
-    refreshDayJobsList:       false,
-    refreshJobList:           false
+    refreshJobView:           false
   },
   user: {
     refreshUsersCollection:   false
+  },
+  refreshControls: {
+    refreshCalendar:          false,
+    calendar_start_day:       null,
+    calendar_end_day:         null,
+    refreshDayJobsList:       false
   }
 }

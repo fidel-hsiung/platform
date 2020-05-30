@@ -9,11 +9,11 @@ import { bindActionCreators } from 'redux';
 import { openModalBox } from 'actions/modalBoxActions';
 import { newJob, viewJob } from 'actions/jobActions';
 import { logout } from 'actions/currentUserActions';
-import { setCalendarDates } from 'actions/calendarActions';
+import { setCalendarDates } from 'actions/refreshControlsActions';
 
 function mapStateToProps(state){
   return{
-    refreshCalendar: state.calendar.refreshCalendar,
+    refreshCalendar: state.refreshControls.refreshCalendar,
     role: state.currentUser.role
   }
 }
@@ -43,7 +43,6 @@ class CalendarPage extends React.Component {
   }
 
   componentDidMount(){
-    console.log(this.props.location);
     this.getCalendarEvents(this.state.calendarDay);
   }
 
@@ -136,6 +135,10 @@ class CalendarPage extends React.Component {
     };
   }
 
+  handleViewDay(e){
+    this.props.history.push('/day#'+moment(e).format("YYYY-MM-DD"));
+  }
+
 	render() {
 	  return(
 	  	<div className='page-main-content calendar-page'>
@@ -160,6 +163,8 @@ class CalendarPage extends React.Component {
 		      startAccessor='start_date'
 		      endAccessor='end_date'
           titleAccessor='name'
+          popup={true}
+          onDrillDown={e=>this.handleViewDay(e)}
           components={
             {
               toolbar: this.customToolbar.bind(this),

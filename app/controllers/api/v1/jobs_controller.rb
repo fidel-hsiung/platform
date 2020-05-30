@@ -31,12 +31,7 @@ class Api::V1::JobsController < Api::V1::BaseController
 	def create
     job = current_user.jobs.build(job_params)
     if job.save
-    	if job.pending?
-    		res = {success: true}
-    	else
-    		res = {start_date: job.start_date, end_date: job.end_date}
-    	end
-      render json: res
+      render json: Api::V1::JobSerializer.new(job).to_custom_hash
     else
       error!({error: job.errors}, 422)
     end
@@ -45,11 +40,7 @@ class Api::V1::JobsController < Api::V1::BaseController
 	def update
 		job = Job.find(params[:id])
     if job.update!(job_params)
-    	if job.pending?
-    		render json: {success: true}
-    	else
-        render json: {refresh: true}
-    	end
+      render json: Api::V1::JobSerializer.new(job).to_custom_hash
     else
       error!({error: job.errors}, 422)
     end

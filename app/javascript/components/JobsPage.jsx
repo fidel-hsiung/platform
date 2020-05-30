@@ -9,11 +9,11 @@ import { bindActionCreators } from 'redux';
 import { openModalBox } from 'actions/modalBoxActions';
 import { newJob, viewJob } from 'actions/jobActions';
 import { logout } from 'actions/currentUserActions';
-import { getDayFromHashParameter } from 'middlewares/custom';
+import { getDayFromHashParameter } from 'middlewares/custom'
 
 function mapStateToProps(state){
   return{
-    refreshDayJobsList: state.job.refreshDayJobsList,
+    refreshDayJobsList: state.refreshControls.refreshDayJobsList,
     currentUserId: state.currentUser.id
   }
 }
@@ -22,7 +22,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({openModalBox, newJob, viewJob, logout}, dispatch)
 }
 
-class DayJobsPage extends React.Component {
+class JobsPage extends React.Component {
 
   constructor(props){
     super(props);
@@ -193,4 +193,4 @@ class DayJobsPage extends React.Component {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DayJobsPage);
+export default connect(mapStateToProps, mapDispatchToProps)(JobsPage);
