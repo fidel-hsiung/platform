@@ -36,9 +36,9 @@ main
         overflow-y: scroll
         .calendar-tool-container
           margin-bottom: 1rem
-          font-size: 20px
           display: flex
           justify-content: space-between
+          font-size: 20px
           .job-filter
             color: $dark
             .filter-title
@@ -69,19 +69,16 @@ main
               margin-right: 1rem
           .form-check.form-check-inline
             font-size: 15px
-        .table-responsive
-          thead
-            th
-              a
-                cursor: pointer
-          tbody
-            tr
-              cursor: pointer
-              td.attendees-td
-                img
-                  margin-right: 3px
-                  &:last-of-type
-                    margin-right: 0px
+
+      &.jobs-page
+        .jobs-header
+          margin-bottom: 1rem
+          display: flex
+          justify-content: space-between
+          .job-filter
+            .dropdown-menu.show
+              width: 600px
+              padding: $spacer
 
 .login-page
   min-height: 100vh
@@ -113,3 +110,6 @@ main
 .loading-page
   min-height: 100vh
   +flex()
+
+.hide
+  display: none

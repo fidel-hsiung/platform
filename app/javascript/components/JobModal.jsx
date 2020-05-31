@@ -21,33 +21,26 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({closeJobModal, openModalBox, checkJobRefresh}, dispatch)
 }
 
+const emptyJob = {
+  id: null,
+  name: '',
+  status: 'pending',
+  job_number: '',
+  location: '',
+  start_date: '',
+  end_date: '',
+  user_ids: [],
+  body: '',
+  user_jobs_attributes: [],
+  errors: {}
+}
+
 class JobModal extends React.Component{
 
   constructor(props){
     super(props);
-    this.emptyUserJob = {
-      id: null,
-      user_id: null,
-      user_image_url: '',
-      user_full_name: '',
-      errors: {},
-      _destroy: false
-    };
-    this.emptyJob = {
-      id: null,
-      name: '',
-      status: 'pending',
-      job_number: '',
-      location: '',
-      start_date: '',
-      end_date: '',
-      user_ids: [],
-      body: '',
-      user_jobs_attributes: [],
-      errors: {}
-    };
     this.state = {
-      job: Object.assign({}, this.emptyJob),
+      job: Object.assign({}, emptyJob),
       users: []
     };
   }
@@ -59,28 +52,9 @@ class JobModal extends React.Component{
   componentDidUpdate(prevProps){
     if (this.props.jobId != prevProps.jobId){
       if (this.props.jobId == null){
-        this.setState({job: Object.assign({}, this.emptyJob)});
+        this.setState({job: Object.assign({}, emptyJob)});
       } else {
-        const url = '/api/v1/jobs/' + this.props.jobId + '/edit';
-        fetch(url, {
-          method: 'GET',
-          headers: {
-            'X-USER-AUTH-TOKEN': localStorage.getItem('authToken')
-          }
-        })
-        .then(processResponse)
-        .then(response => {
-          this.setState({
-            job: response.data
-          })
-        })
-        .catch(response => {
-          if (response.status == 401){
-            localStorage.removeItem('authToken');
-            this.props.logout();
-          }
-          this.props.openModalBox('Error', response.data.error.join(','));
-        });
+        this.getJob()
       }
     }
 
@@ -89,6 +63,29 @@ class JobModal extends React.Component{
         this.getUsers();
       }
     }
+  }
+
+  getJob(){
+    const url = '/api/v1/jobs/' + this.props.jobId + '/edit';
+    fetch(url, {
+      method: 'GET',
+      headers: {
+        'X-USER-AUTH-TOKEN': localStorage.getItem('authToken')
+      }
+    })
+    .then(processResponse)
+    .then(response => {
+      this.setState({
+        job: response.data
+      })
+    })
+    .catch(response => {
+      if (response.status == 401){
+        localStorage.removeItem('authToken');
+        this.props.logout();
+      }
+      this.props.openModalBox('Error', response.data.error.join(','));
+    });
   }
 
   getUsers(){
@@ -197,6 +194,7 @@ class JobModal extends React.Component{
     delete job['errors'];
     delete job['users'];
     delete job['user_ids'];
+    delete job['users_count'];
     job.user_jobs_attributes.forEach(user_job => {
       delete user_job['job_id'];
       delete user_job['user_avatar_url'];
@@ -204,8 +202,8 @@ class JobModal extends React.Component{
       delete user_job['errors'];
     })
     const data = {job: job}
-    const url = this.state.job.id == null ? '/api/v1/jobs' : '/api/v1/jobs/' + this.state.job.id
-    const method = this.state.job.id == null ? 'POST' : 'PUT'
+    const url = this.props.jobId == null ? '/api/v1/jobs' : '/api/v1/jobs/' + this.props.jobId
+    const method = this.props.jobId == null ? 'POST' : 'PUT'
 
     fetch(url, {
       method: method,
@@ -254,9 +252,13 @@ class JobModal extends React.Component{
   }
 
   handleClearJob(){
-    let job = Object.assign({}, this.emptyJob);
-    job.user_jobs_attributes = [];
-    this.setState({job: job});
+    if (this.props.jobId) {
+      this.getJob();
+    } else {
+      let job = Object.assign({}, emptyJob);
+      job.user_jobs_attributes = [];
+      this.setState({job: job});
+    }
   }
 
   render(){

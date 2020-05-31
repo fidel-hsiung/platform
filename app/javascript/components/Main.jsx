@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
 import CalendarPage from 'components/CalendarPage';
 import DayJobsPage from 'components/DayJobsPage';
+import JobsPage from 'components/JobsPage';
+import UsersPage from 'components/UsersPage';
 import LoginPage from 'components/LoginPage';
 import Header from 'components/Header';
 import LeftSideNav from 'components/LeftSideNav';
@@ -25,8 +27,10 @@ export default function Main(props) {
           <LeftSideNav />
           <Switch>
             <Route exact path="/" render={(props) => <CalendarPage {...props} history={history} />} />
-            <Route exact path="/day" component={DayJobsPage} />
-            <Route path="/login" render={() => <Redirect to="/" />} />
+            <Route path="/day" component={DayJobsPage} />
+            <Route path="/jobs" component={JobsPage} />
+            <Route path="/users" component={UsersPage} />
+            <Route path="*" render={() => <Redirect to="/" />} />
           </Switch>
         </div>
       </React.Fragment>

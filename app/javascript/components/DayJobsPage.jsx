@@ -7,19 +7,20 @@ import { processResponse } from 'middlewares/custom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { openModalBox } from 'actions/modalBoxActions';
-import { newJob, viewJob } from 'actions/jobActions';
+import { viewJob } from 'actions/jobActions';
 import { logout } from 'actions/currentUserActions';
+import { setJobsDate } from 'actions/refreshControlsActions';
 import { getDayFromHashParameter } from 'middlewares/custom';
 
 function mapStateToProps(state){
   return{
-    refreshDayJobsList: state.job.refreshDayJobsList,
+    refreshDayJobsList: state.refreshControls.refreshDayJobsList,
     currentUserId: state.currentUser.id
   }
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({openModalBox, newJob, viewJob, logout}, dispatch)
+  return bindActionCreators({openModalBox, viewJob, logout, setJobsDate}, dispatch)
 }
 
 class DayJobsPage extends React.Component {
@@ -59,6 +60,7 @@ class DayJobsPage extends React.Component {
         jobs: response.data.jobs,
         day: response.data.day
       });
+      this.props.setJobsDate(response.data.day);
       if (this.props.location.hash != ('#'+response.data.day)){
         window.history.pushState(null, null, '#'+response.data.day)
       }
@@ -137,7 +139,7 @@ class DayJobsPage extends React.Component {
           </div>
           <Form.Check className='text-primary' inline label='Only view my jobs' onChange={e=>this.handleOnlyViewMyJobsChange(e)} checked={this.state.onlyViewMyJobs} />
         </div>
-        <Table responsive bordered hover>
+        <Table responsive bordered hover className='job-table'>
           <thead>
             <tr>
               <th>

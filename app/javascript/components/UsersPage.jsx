@@ -1,7 +1,6 @@
 import React from 'react';
-import { Table, Button } from 'react-bootstrap';
+import { Table, Form, Button } from 'react-bootstrap';
 import { FaSort, FaSortUp, FaSortDown, FaCaretLeft, FaCaretRight } from 'react-icons/fa';
-import ReactPaginate from 'react-paginate';
 import { processResponse } from 'middlewares/custom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -12,7 +11,6 @@ import JobFilter from 'components/JobFilter';
 
 function mapStateToProps(state){
   return{
-    refreshJobsList: state.refreshControls.refreshJobsList,
     role: state.currentUser.role
   }
 }
@@ -21,7 +19,7 @@ function mapDispatchToProps(dispatch) {
   return bindActionCreators({openModalBox, newJob, viewJob, logout}, dispatch)
 }
 
-class JobsPage extends React.Component {
+class UsersPage extends React.Component {
 
   constructor(props){
     super(props);
@@ -50,7 +48,8 @@ class JobsPage extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState){
-    if(this.props.refreshJobsList != prevProps.refreshJobsList || (this.state.applyFilterChanged != prevState.applyFilterChanged && (this.state.applyFilter == true || this.state.applyFilter != prevState.applyFilter))){
+    if(this.props.refreshDayJobsList != prevProps.refreshDayJobsList || (this.state.applyFilterChanged != prevState.applyFilterChanged && (this.state.applyFilter == true || this.state.applyFilter != prevState.applyFilter))){
+      console.log('123');
       this.getJobs(this.state.page, this.state.sortBy, this.state.sortMethod);
     }
   }
@@ -146,11 +145,6 @@ class JobsPage extends React.Component {
     })
   }
 
-  handlePageChange(e){
-    let currentPage = e.selected + 1;
-    this.getJobs(currentPage, this.state.sortBy, this.state.sortMethod);
-  }
-
   render() {
     return(
       <div className='page-main-content jobs-page'>
@@ -213,27 +207,9 @@ class JobsPage extends React.Component {
             )}
           </tbody>
         </Table>
-        {this.state.totalPages > 0 &&
-          <ReactPaginate pageCount={this.state.totalPages}
-                         PageRangeDisplayed={3}
-                         marginPagesDisplayed={1}
-                         forcePage={this.state.page-1}
-                         disableInitialCallback={true}
-                         containerClassName='table-pagination'
-                         pageClassName='page'
-                         pageLinkClassName=''
-                         activeClassName='current-page'
-                         activeLinkClassName=''
-                         previousClassName='hide'
-                         nextClassName='hide'
-                         breakClassName=''
-                         breakLinkClassName=''
-                         onPageChange={e=>this.handlePageChange(e)}
-          />
-        }
       </div>
     );
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(JobsPage);
+export default connect(mapStateToProps, mapDispatchToProps)(UsersPage);

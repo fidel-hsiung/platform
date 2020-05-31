@@ -18,4 +18,5 @@ export const REFRESH_USERS_COLLECTION = 'REFRESH_USERS_COLLECTION';
 
 /** Refresh Controls Action Types **/
 export const SET_CALENDAR_DATES = 'SET_CALENDAR_DATES';
+export const SET_JOBS_DATE = 'SET_JOBS_DATE';
 export const CHECK_JOB_REFRESH = 'CHECK_JOB_REFRESH';

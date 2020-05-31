@@ -63,3 +63,11 @@ UserJob.create(user: user4, job: job6)
 UserJob.create(user: user5, job: job6)
 UserJob.create(user: user6, job: job6)
 UserJob.create(user: user7, job: job6)
+
+jobs = []
+statuses = %w(pending active finished failed)
+
+50.times do |i|
+  jobs[i] = Job.create(user: admin1, name: "Test previous job #{i+1}", body: 'Test body, Test body, Test body, Test body, Test body', job_number: "Platform-previous-job-#{i+1}", location: 'The ARC Campbelltown, Lower North East Road, Campbelltown SA')
+  jobs[i].update_columns(start_date: Date.current - (i + 2).days, end_date: Date.current - i.days, status: statuses[i%4])
+end

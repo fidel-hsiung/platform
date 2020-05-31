@@ -1,6 +1,31 @@
 class Api::V1::JobsController < Api::V1::BaseController
 
   def index
+    name = params[:name]
+    job_number = params[:job_number].present? ? params[:job_number] : ''
+    start_date = params[:start_date].present? ? params[:start_date].to_date : ''
+    end_date = params[:end_date].present? ? params[:end_date].to_date : ''
+    statuses = params[:statuses].present? ? params[:statuses].select(&:present?) : []
+    attendee_ids = params[:attendee_ids].present? ? params[:attendee_ids].select(&:present?) : []
+    creator_ids = params[:creator_ids].present? ? params[:creator_ids].select(&:present?) : []
+    sort_by = params[:sort_by].in?(%w(id name job_number start_date status users_count)) ? params[:sort_by] : 'id'
+    sort_method = params[:sort_method].in?(%w(asc desc)) ? params[:sort_method] : 'asc'
+    current_page = params[:page].present? ? params[:page].to_i : 1
+
+    jobs = JobFilter.new({
+      name: name,
+      job_number: job_number,
+      statuses: statuses,
+      start_date: start_date,
+      end_date: end_date,
+      attendee_ids: params[:attendee_ids] || [],
+      creator_ids: params[:creator_ids] || []
+    }).result
+
+    sorted_jobs = jobs.select('jobs.*, COUNT(user_jobs.id) as users_count').group('jobs.id').order(Arel.sql("#{params[:sort_by]} #{params[:sort_method]}")).page(current_page)
+    total_pages = sorted_jobs.total_pages
+
+    render json: {jobs: Api::V1::JobSerializer.new(sorted_jobs, params: {include_users: true}).to_custom_hash, total_pages: total_pages}
   end
 
 	def calendar_jobs

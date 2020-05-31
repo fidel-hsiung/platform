@@ -102,12 +102,16 @@ export function FormDatePicker (props) {
 }
 
 export function FormAttendeesSelect (props) {
+
+  let temp = props.options.filter(option => {return props.value.indexOf(option.id) != -1})
+  let value = temp ? temp : [];
+
   return(
     <Form.Group as={Row}>
       <Form.Label column sm='3'>{props.label}</Form.Label>
       <Col sm='9'>
         <Select
-          value={props.options.filter(user => {return props.value.indexOf(user.id) != -1})}
+          value={value}
           options={props.options}
           isMulti
           getOptionLabel={(data)=>{return data.full_name;}}
@@ -137,6 +141,58 @@ export function FormRichTextInput (props) {
         />
         <div className='error'>{props.error}</div>
       </div>
+    </Form.Group>
+  );
+}
+
+export function FilterFormInput (props) {
+  return(
+    <Form.Group as={Row}>
+      <Form.Label column sm='3'>{props.label}</Form.Label>
+      <Col sm='9'>
+        <Form.Control type='text' placeholder={props.placeholder} value={props.value} onChange={e => props.handleChange(e.target.value)} />
+        <Form.Control.Feedback type='invalid'>{props.error}</Form.Control.Feedback>
+      </Col>
+    </Form.Group>
+  );
+}
+
+export function FilterFormMultiSelect (props) {
+
+  let temp = props.options.filter(option => {return props.value.indexOf(option.value) != -1})
+  let value = temp ? temp : [];
+
+  return(
+    <Form.Group as={Row}>
+      <Form.Label column sm='3'>{props.label}</Form.Label>
+      <Col sm='9'>
+        <Select
+          value={value}
+          options={props.options}
+          isMulti
+          onChange={e=>props.handleChange(e ? e.map(temp=>temp.value) : [])}
+          placeholder={props.placeholder}
+          className="basic-multi-select"
+          classNamePrefix="select"
+        />
+      </Col>
+    </Form.Group>
+  );
+}
+
+export function FilterFormDateRange (props) {
+
+  let startDate = props.startDate == '' ? null : new Date(props.startDate);
+  let endDate = props.endDate == '' ? null : new Date(props.endDate);
+
+  return(
+    <Form.Group as={Row}>
+      <Form.Label column sm='3'>Date Range</Form.Label>
+      <Col sm='9' className='d-flex justify-content-between'>
+        <DatePicker selectsStart startDate={startDate} endDate={endDate} selected={startDate} onChange={e => props.handleStartDateChange(e == null ? '' : moment(e).format('YYYY-MM-DD'))} className='form-control' dateFormat="yyyy-MM-dd" placeholderText='start date' />
+        <div className='d-flex flex-column justify-content-center'> to </div>
+        <DatePicker selectsEnd startDate={startDate} endDate={endDate} selected={endDate} onChange={e => props.handleEndDateChange(e == null ? '' : moment(e).format('YYYY-MM-DD'))} className='form-control' dateFormat="yyyy-MM-dd" placeholderText='end date' minDate={startDate} />
+      </Col>
     </Form.Group>
   );
 }

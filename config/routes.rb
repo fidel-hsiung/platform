@@ -11,6 +11,7 @@ Rails.application.routes.draw do
 
   		get     '/calendar-jobs',                      to: 'jobs#calendar_jobs'
       get     '/day-jobs',                           to: 'jobs#day_jobs'
+      get     '/jobs',                               to: 'jobs#index'
       get     '/jobs/:id',                           to: 'jobs#show'
       post    '/jobs',                               to: 'jobs#create'
       get     '/jobs/:id/edit',                      to: 'jobs#edit'

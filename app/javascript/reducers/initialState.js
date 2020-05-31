@@ -24,9 +24,11 @@ export default {
     refreshUsersCollection:   false
   },
   refreshControls: {
+    calendarStartDay:         null,
+    calendarEndDay:           null,
     refreshCalendar:          false,
-    calendar_start_day:       null,
-    calendar_end_day:         null,
-    refreshDayJobsList:       false
+    jobsDay:                  null,
+    refreshDayJobsList:       false,
+    refreshJobsList:          false
   }
 }
