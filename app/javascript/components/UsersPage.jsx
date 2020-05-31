@@ -1,13 +1,13 @@
 import React from 'react';
 import { Table, Form, Button } from 'react-bootstrap';
 import { FaSort, FaSortUp, FaSortDown, FaCaretLeft, FaCaretRight } from 'react-icons/fa';
+import ReactPaginate from 'react-paginate';
 import { processResponse } from 'middlewares/custom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { openModalBox } from 'actions/modalBoxActions';
-import { newJob, viewJob } from 'actions/jobActions';
 import { logout } from 'actions/currentUserActions';
-import JobFilter from 'components/JobFilter';
+import UserFilter from 'components/UserFilter';
 
 function mapStateToProps(state){
   return{
@@ -16,7 +16,7 @@ function mapStateToProps(state){
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({openModalBox, newJob, viewJob, logout}, dispatch)
+  return bindActionCreators({openModalBox, logout}, dispatch)
 }
 
 class UsersPage extends React.Component {
@@ -24,15 +24,13 @@ class UsersPage extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      jobs: [],
-      jobFilter: {
-        name: '',
-        jobNumber: '',
-        statuses: [],
-        startDate: '',
-        endDate: '',
-        attendeeIds: [],
-        creatorIds: []
+      users: [],
+      userFilter: {
+        email: '',
+        firstName: '',
+        lastName: [],
+        roles: [],
+        archived: ''
       },
       applyFilter: false,
       applyFilterChanged: false,
@@ -44,46 +42,39 @@ class UsersPage extends React.Component {
   }
 
   componentDidMount(){
-    this.getJobs(this.state.page, this.state.sortBy, this.state.sortMethod);
+    this.getUsers(this.state.page, this.state.sortBy, this.state.sortMethod);
   }
 
   componentDidUpdate(prevProps, prevState){
-    if(this.props.refreshDayJobsList != prevProps.refreshDayJobsList || (this.state.applyFilterChanged != prevState.applyFilterChanged && (this.state.applyFilter == true || this.state.applyFilter != prevState.applyFilter))){
-      console.log('123');
-      this.getJobs(this.state.page, this.state.sortBy, this.state.sortMethod);
+    if(this.props.refreshUsersList != prevProps.refreshUsersList || (this.state.applyFilterChanged != prevState.applyFilterChanged && (this.state.applyFilter == true || this.state.applyFilter != prevState.applyFilter))){
+      this.getUsers(this.state.page, this.state.sortBy, this.state.sortMethod);
     }
   }
 
   getQueryString(){
     let queryString = '';
     if (this.state.applyFilter){
-      if (this.state.jobFilter.name != ''){
-        queryString += '&name='+this.state.jobFilter.name;
+      if (this.state.userFilter.email != ''){
+        queryString += '&email='+this.state.userFilter.email;
       }
-      if (this.state.jobFilter.jobNumber != ''){
-        queryString += '&job_number='+this.state.jobFilter.jobNumber;
+      if (this.state.userFilter.firstName != ''){
+        queryString += '&first_name='+this.state.userFilter.firstName;
       }
-      for(let i=0;i<this.state.jobFilter.statuses.length;i++){
-        queryString += '&statuses[]='+this.state.jobFilter.statuses[i];
+      if (this.state.userFilter.lastName != ''){
+        queryString += '&last_name='+this.state.userFilter.lastName;
       }
-      if (this.state.jobFilter.startDate != ''){
-        queryString += '&start_date='+this.state.jobFilter.startDate;
+      for(let i=0;i<this.state.userFilter.roles.length;i++){
+        queryString += '&roles[]='+this.state.userFilter.roles[i];
       }
-      if (this.state.jobFilter.endDate != ''){
-        queryString += '&end_date='+this.state.jobFilter.endDate;
-      }
-      for(let i=0;i<this.state.jobFilter.attendeeIds.length;i++){
-        queryString += '&attendee_ids[]='+this.state.jobFilter.attendeeIds[i];
-      }
-      for(let i=0;i<this.state.jobFilter.creatorIds.length;i++){
-        queryString += '&creator_ids[]='+this.state.jobFilter.creatorIds[i];
+      if (this.state.userFilter.archived != ''){
+        queryString += '&archived='+this.state.userFilter.archived;
       }
     }
     return queryString;
   }
 
-  getJobs(page, sortBy, sortMethod){
-    let url = '/api/v1/jobs?page='+page+'&sort_by='+sortBy+'&sort_method='+sortMethod+this.getQueryString();
+  getUsers(page, sortBy, sortMethod){
+    let url = '/api/v1/users?page='+page+'&sort_by='+sortBy+'&sort_method='+sortMethod+this.getQueryString();
     fetch(url, {
       method: 'GET',
       headers: {
@@ -93,7 +84,7 @@ class UsersPage extends React.Component {
     .then(processResponse)
     .then(response => {
       this.setState({
-        jobs: response.data.jobs,
+        users: response.data.users,
         page: page,
         totalPages: response.data.total_pages,
         sortBy: sortBy,
@@ -114,7 +105,7 @@ class UsersPage extends React.Component {
     if(nextSortBy == this.state.sortBy){
       nextSortMethod = this.state.sortMethod == 'asc' ? 'desc' : 'asc';
     }
-    this.getJobs(this.state.page, nextSortBy, nextSortMethod)
+    this.getUsers(this.state.page, nextSortBy, nextSortMethod)
   }
 
   sortIcon(name){
@@ -130,16 +121,16 @@ class UsersPage extends React.Component {
   }
 
   filterButtonVariant(){
-    if (this.state.applyFilter && (this.state.jobFilter.name != '' || this.state.jobFilter.jobNumber != '' || this.state.jobFilter.statuses.length > 0 || this.state.jobFilter.startDate != '' || this.state.jobFilter.endDate != '' || this.state.jobFilter.attendeeIds.length > 0 || this.state.jobFilter.creatorIds.length > 0)){
+    if (this.state.applyFilter && (this.state.userFilter.email != '' || this.state.userFilter.firstName != '' || this.state.userFilter.lastName != '' || this.state.userFilter.roles.length > 0 || this.state.userFilter.archived != '')){
       return 'success';
     } else {
       return 'secondary';
     }
   }
 
-  handlejobFilterChange(jobFilter, applyFilter, applyFilterChanged){
+  handleUserFilterChange(userFilter, applyFilter, applyFilterChanged){
     this.setState({
-      jobFilter: jobFilter,
+      userFilter: userFilter,
       applyFilter: applyFilter,
       applyFilterChanged: applyFilterChanged
     })
@@ -147,66 +138,73 @@ class UsersPage extends React.Component {
 
   render() {
     return(
-      <div className='page-main-content jobs-page'>
-        <div className='jobs-header'>
-          <JobFilter jobFilter={this.state.jobFilter} applyFilter={this.state.applyFilter} applyFilterChanged={this.state.applyFilterChanged} handlejobFilterChange={(jobFilter, applyFilter, applyFilterChanged)=>this.handlejobFilterChange(jobFilter, applyFilter, applyFilterChanged)} filterButtonVariant={this.filterButtonVariant()} />
+      <div className='page-main-content users-page'>
+        <div className='page-content-header users-header'>
+          <UserFilter userFilter={this.state.userFilter} applyFilter={this.state.applyFilter} applyFilterChanged={this.state.applyFilterChanged} filterButtonVariant={this.filterButtonVariant()} handleUserFilterChange={(jobFilter, applyFilter, applyFilterChanged)=>this.handleUserFilterChange(jobFilter, applyFilter, applyFilterChanged)} />
           {this.props.role == 'admin' &&
-            <Button variant="info" onClick={() => this.props.newJob()}>
-              Create New Job
+            <Button variant="info">
+              Create New User
             </Button>
           }
         </div>
-        <Table responsive bordered hover className='job-table'>
+        <Table responsive bordered hover className='user-table'>
           <thead>
             <tr>
               <th>
-                <a onClick={()=>this.handleSortClick('name')}>
-                  Job Name
-                  {this.sortIcon('name')}
+                <a onClick={()=>this.handleSortClick('email')}>
+                  Email
+                  {this.sortIcon('email')}
                 </a>
               </th>
               <th>
-                <a onClick={()=>this.handleSortClick('job_number')}>
-                  Job Number
-                  {this.sortIcon('job_number')}
+                <a onClick={()=>this.handleSortClick('first_name')}>
+                  Name
+                  {this.sortIcon('first_name')}
                 </a>
               </th>
               <th>
-                <a onClick={()=>this.handleSortClick('status')}>
-                  Job status
-                  {this.sortIcon('status')}
+                <a onClick={()=>this.handleSortClick('role')}>
+                  Role
+                  {this.sortIcon('role')}
                 </a>
               </th>
               <th>
-                <a onClick={()=>this.handleSortClick('start_date')}>
-                  Job Date Range
-                  {this.sortIcon('start_date')}
-                </a>
-              </th>
-              <th>
-                <a onClick={()=>this.handleSortClick('users_count')}>
-                  Job Attendees
-                  {this.sortIcon('users_count')}
+                <a onClick={()=>this.handleSortClick('archived')}>
+                  Archived
+                  {this.sortIcon('archived')}
                 </a>
               </th>
             </tr>
           </thead>
           <tbody>
-            {this.state.jobs.map(job =>
-              <tr key={job.id} onClick={()=>this.props.viewJob(job.id)} >
-                <td>{job.name}</td>
-                <td>{job.job_number}</td>
-                <td>{job.status}</td>
-                <td>{job.start_date + ' to ' + job.end_date}</td>
-                <td className='attendees-td'>
-                  {job.users.map(user =>
-                    <img key={user.id} className="avatar small" title={user.full_name} src={user.avatar_url}></img>
-                  )}
-                </td>
+            {this.state.users.map(user =>
+              <tr key={user.id} >
+                <td>{user.email}</td>
+                <td>{user.full_name}</td>
+                <td>{user.role}</td>
+                <td>{user.archived ? 'True' : 'False'}</td>
               </tr>
             )}
           </tbody>
         </Table>
+        {this.state.totalPages > 1 &&
+          <ReactPaginate pageCount={this.state.totalPages}
+                         PageRangeDisplayed={3}
+                         marginPagesDisplayed={1}
+                         forcePage={this.state.page-1}
+                         disableInitialCallback={true}
+                         containerClassName='table-pagination'
+                         pageClassName='page'
+                         pageLinkClassName=''
+                         activeClassName='current-page'
+                         activeLinkClassName=''
+                         previousClassName='hide'
+                         nextClassName='hide'
+                         breakClassName=''
+                         breakLinkClassName=''
+                         onPageChange={e=>this.handlePageChange(e)}
+          />
+        }
       </div>
     );
   }

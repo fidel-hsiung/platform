@@ -196,3 +196,26 @@ export function FilterFormDateRange (props) {
     </Form.Group>
   );
 }
+
+export function FilterFormSelect (props) {
+
+  let temp = props.options.find(e=>e.value == props.value);
+  let value = temp ? temp : '';
+
+  return(
+    <Form.Group as={Row}>
+      <Form.Label column sm='3'>{props.label}</Form.Label>
+      <Col sm='9'>
+        <Select
+          value={value}
+          options={props.options}
+          onChange={e => props.handleChange(e ? e.value : '')}
+          placeholder={props.placeholder}
+          className="basic-multi-select"
+          classNamePrefix="select"
+        />
+        <div className='error'>{props.error}</div>
+      </Col>
+    </Form.Group>
+  );
+}

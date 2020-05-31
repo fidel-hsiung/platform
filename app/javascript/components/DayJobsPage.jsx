@@ -131,7 +131,7 @@ class DayJobsPage extends React.Component {
   render() {
     return(
       <div className='page-main-content day-page'>
-        <div className='day-header'>
+        <div className='page-content-header day-header'>
           <div className='day-tool-box'>
             <FaCaretLeft style={{cursor: 'pointer'}} onClick={()=>this.goToPreviousDay()} />
             <div className={'label-date'}>{this.state.day}</div>

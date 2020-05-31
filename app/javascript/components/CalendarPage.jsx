@@ -142,7 +142,7 @@ class CalendarPage extends React.Component {
 	render() {
 	  return(
 	  	<div className='page-main-content calendar-page'>
-        <div className='calendar-tool-container'>
+        <div className='page-content-header calendar-header'>
           <div className='job-filter'>
             <div className='filter-title'>Job Filter:</div>
             <Form.Check name='active' className='text-danger' inline label='active' onChange={e=>this.handleCheckboxClick(e)} checked={this.state.statuses.includes('active')} />

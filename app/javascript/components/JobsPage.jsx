@@ -138,7 +138,7 @@ class JobsPage extends React.Component {
     }
   }
 
-  handlejobFilterChange(jobFilter, applyFilter, applyFilterChanged){
+  handleJobFilterChange(jobFilter, applyFilter, applyFilterChanged){
     this.setState({
       jobFilter: jobFilter,
       applyFilter: applyFilter,
@@ -154,8 +154,8 @@ class JobsPage extends React.Component {
   render() {
     return(
       <div className='page-main-content jobs-page'>
-        <div className='jobs-header'>
-          <JobFilter jobFilter={this.state.jobFilter} applyFilter={this.state.applyFilter} applyFilterChanged={this.state.applyFilterChanged} handlejobFilterChange={(jobFilter, applyFilter, applyFilterChanged)=>this.handlejobFilterChange(jobFilter, applyFilter, applyFilterChanged)} filterButtonVariant={this.filterButtonVariant()} />
+        <div className='page-content-header jobs-header'>
+          <JobFilter jobFilter={this.state.jobFilter} applyFilter={this.state.applyFilter} applyFilterChanged={this.state.applyFilterChanged} handleJobFilterChange={(jobFilter, applyFilter, applyFilterChanged)=>this.handleJobFilterChange(jobFilter, applyFilter, applyFilterChanged)} filterButtonVariant={this.filterButtonVariant()} />
           {this.props.role == 'admin' &&
             <Button variant="info" onClick={() => this.props.newJob()}>
               Create New Job
@@ -213,7 +213,7 @@ class JobsPage extends React.Component {
             )}
           </tbody>
         </Table>
-        {this.state.totalPages > 0 &&
+        {this.state.totalPages > 1 &&
           <ReactPaginate pageCount={this.state.totalPages}
                          PageRangeDisplayed={3}
                          marginPagesDisplayed={1}

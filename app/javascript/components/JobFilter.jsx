@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { processResponse } from 'middlewares/custom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -73,7 +73,7 @@ class JobFilter extends React.Component {
 
     if (this.state.jobFilter.name != '' || this.state.jobFilter.jobNumber != '' || this.state.jobFilter.statuses.length > 0 || this.state.jobFilter.startDate != '' || this.state.jobFilter.endDate != '' || this.state.jobFilter.attendeeIds.length > 0 || this.state.jobFilter.creatorIds.length > 0) {
       this.setState({filterShow: false});
-      this.props.handlejobFilterChange(this.state.jobFilter, true, !this.props.applyFilterChanged);
+      this.props.handleJobFilterChange(this.state.jobFilter, true, !this.props.applyFilterChanged);
     }
   }
 
@@ -90,7 +90,7 @@ class JobFilter extends React.Component {
       filterShow: false
     });
     let applyFilterChanged = this.props.applyFilter ? !this.props.applyFilterChanged : this.props.applyFilterChanged;
-    this.props.handlejobFilterChange(jobFilter, false, applyFilterChanged);
+    this.props.handleJobFilterChange(jobFilter, false, applyFilterChanged);
   }
 
   render(){

@@ -31,13 +31,14 @@ main
     .page-main-content
       width: 100%
       padding: $spacer
+      .page-content-header
+        margin-bottom: 1rem
+        display: flex
+        justify-content: space-between
       &.calendar-page
         min-height: 100%
         overflow-y: scroll
-        .calendar-tool-container
-          margin-bottom: 1rem
-          display: flex
-          justify-content: space-between
+        .calendar-header
           font-size: 20px
           .job-filter
             color: $dark
@@ -57,9 +58,6 @@ main
 
       &.day-page
         .day-header
-          margin-bottom: 1rem
-          display: flex
-          justify-content: space-between
           font-size: 20px
           .day-tool-box
             +flex(center, center)
@@ -72,10 +70,14 @@ main
 
       &.jobs-page
         .jobs-header
-          margin-bottom: 1rem
-          display: flex
-          justify-content: space-between
           .job-filter
+            .dropdown-menu.show
+              width: 600px
+              padding: $spacer
+
+      &.users-page
+        .users-header
+          .user-filter
             .dropdown-menu.show
               width: 600px
               padding: $spacer
