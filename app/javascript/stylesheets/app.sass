@@ -30,7 +30,7 @@ main
           background: $sidenav-active
     .page-main-content
       width: 100%
-      padding: $spacer
+      padding: $spacer*2
       .page-content-header
         margin-bottom: 1rem
         display: flex
@@ -81,6 +81,25 @@ main
             .dropdown-menu.show
               width: 600px
               padding: $spacer
+
+      &.user-page
+        .user-header
+        .user-profile
+          display: flex
+          align-items: center
+          margin-top: 2rem
+          margin-bottom: 1rem
+          .user-name
+            display: flex
+            align-items: baseline
+            .name
+              font-weight: 400
+              font-size: 2.3rem
+              margin-left: $spacer * 2
+            .status
+              font-size: 1.2rem
+              color: $red
+
 
 .login-page
   min-height: 100vh

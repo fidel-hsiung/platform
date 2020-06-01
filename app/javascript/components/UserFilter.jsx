@@ -66,9 +66,13 @@ class UserFilter extends React.Component {
     this.props.handleUserFilterChange(userFilter, false, applyFilterChanged);
   }
 
+  handleToggle(isOpen, e, metadata){
+    this.setState({filterShow: isOpen});
+  }
+
   render(){
     return(
-      <Dropdown className='user-filter' show={this.state.filterShow}>
+      <Dropdown className='user-filter' show={this.state.filterShow} onToggle={(isOpen, e, metadata)=>this.handleToggle(isOpen, e, metadata)} >
         <Dropdown.Toggle variant={this.props.filterButtonVariant} onClick={()=>this.toggleFilter()}>
           User Filter
         </Dropdown.Toggle>

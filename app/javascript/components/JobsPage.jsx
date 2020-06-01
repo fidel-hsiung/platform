@@ -9,6 +9,7 @@ import { openModalBox } from 'actions/modalBoxActions';
 import { newJob, viewJob } from 'actions/jobActions';
 import { logout } from 'actions/currentUserActions';
 import JobFilter from 'components/JobFilter';
+import LoadingPage from 'components/LoadingPage';
 
 function mapStateToProps(state){
   return{
@@ -26,7 +27,7 @@ class JobsPage extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      jobs: [],
+      jobs: null,
       jobFilter: {
         name: '',
         jobNumber: '',
@@ -152,87 +153,91 @@ class JobsPage extends React.Component {
   }
 
   render() {
-    return(
-      <div className='page-main-content jobs-page'>
-        <div className='page-content-header jobs-header'>
-          <JobFilter jobFilter={this.state.jobFilter} applyFilter={this.state.applyFilter} applyFilterChanged={this.state.applyFilterChanged} handleJobFilterChange={(jobFilter, applyFilter, applyFilterChanged)=>this.handleJobFilterChange(jobFilter, applyFilter, applyFilterChanged)} filterButtonVariant={this.filterButtonVariant()} />
-          {this.props.role == 'admin' &&
-            <Button variant="info" onClick={() => this.props.newJob()}>
-              Create New Job
-            </Button>
+    if (this.state.jobs){
+      return(
+        <div className='page-main-content jobs-page'>
+          <div className='page-content-header jobs-header'>
+            <JobFilter jobFilter={this.state.jobFilter} applyFilter={this.state.applyFilter} applyFilterChanged={this.state.applyFilterChanged} handleJobFilterChange={(jobFilter, applyFilter, applyFilterChanged)=>this.handleJobFilterChange(jobFilter, applyFilter, applyFilterChanged)} filterButtonVariant={this.filterButtonVariant()} />
+            {this.props.role == 'admin' &&
+              <Button variant="info" onClick={() => this.props.newJob()}>
+                Create New Job
+              </Button>
+            }
+          </div>
+          <Table responsive bordered hover className='job-table'>
+            <thead>
+              <tr>
+                <th>
+                  <a onClick={()=>this.handleSortClick('name')}>
+                    Job Name
+                    {this.sortIcon('name')}
+                  </a>
+                </th>
+                <th>
+                  <a onClick={()=>this.handleSortClick('job_number')}>
+                    Job Number
+                    {this.sortIcon('job_number')}
+                  </a>
+                </th>
+                <th>
+                  <a onClick={()=>this.handleSortClick('status')}>
+                    Job status
+                    {this.sortIcon('status')}
+                  </a>
+                </th>
+                <th>
+                  <a onClick={()=>this.handleSortClick('start_date')}>
+                    Job Date Range
+                    {this.sortIcon('start_date')}
+                  </a>
+                </th>
+                <th>
+                  <a onClick={()=>this.handleSortClick('users_count')}>
+                    Job Attendees
+                    {this.sortIcon('users_count')}
+                  </a>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.state.jobs.map(job =>
+                <tr key={job.id} onClick={()=>this.props.viewJob(job.id)} >
+                  <td>{job.name}</td>
+                  <td>{job.job_number}</td>
+                  <td>{job.status}</td>
+                  <td>{job.start_date + ' to ' + job.end_date}</td>
+                  <td className='attendees-td'>
+                    {job.users.map(user =>
+                      <img key={user.id} className="avatar small" title={user.full_name} src={user.avatar_url}></img>
+                    )}
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </Table>
+          {this.state.totalPages > 1 &&
+            <ReactPaginate pageCount={this.state.totalPages}
+                           PageRangeDisplayed={3}
+                           marginPagesDisplayed={1}
+                           forcePage={this.state.page-1}
+                           disableInitialCallback={true}
+                           containerClassName='table-pagination'
+                           pageClassName='page'
+                           pageLinkClassName=''
+                           activeClassName='current-page'
+                           activeLinkClassName=''
+                           previousClassName='hide'
+                           nextClassName='hide'
+                           breakClassName=''
+                           breakLinkClassName=''
+                           onPageChange={e=>this.handlePageChange(e)}
+            />
           }
         </div>
-        <Table responsive bordered hover className='job-table'>
-          <thead>
-            <tr>
-              <th>
-                <a onClick={()=>this.handleSortClick('name')}>
-                  Job Name
-                  {this.sortIcon('name')}
-                </a>
-              </th>
-              <th>
-                <a onClick={()=>this.handleSortClick('job_number')}>
-                  Job Number
-                  {this.sortIcon('job_number')}
-                </a>
-              </th>
-              <th>
-                <a onClick={()=>this.handleSortClick('status')}>
-                  Job status
-                  {this.sortIcon('status')}
-                </a>
-              </th>
-              <th>
-                <a onClick={()=>this.handleSortClick('start_date')}>
-                  Job Date Range
-                  {this.sortIcon('start_date')}
-                </a>
-              </th>
-              <th>
-                <a onClick={()=>this.handleSortClick('users_count')}>
-                  Job Attendees
-                  {this.sortIcon('users_count')}
-                </a>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.state.jobs.map(job =>
-              <tr key={job.id} onClick={()=>this.props.viewJob(job.id)} >
-                <td>{job.name}</td>
-                <td>{job.job_number}</td>
-                <td>{job.status}</td>
-                <td>{job.start_date + ' to ' + job.end_date}</td>
-                <td className='attendees-td'>
-                  {job.users.map(user =>
-                    <img key={user.id} className="avatar small" title={user.full_name} src={user.avatar_url}></img>
-                  )}
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </Table>
-        {this.state.totalPages > 1 &&
-          <ReactPaginate pageCount={this.state.totalPages}
-                         PageRangeDisplayed={3}
-                         marginPagesDisplayed={1}
-                         forcePage={this.state.page-1}
-                         disableInitialCallback={true}
-                         containerClassName='table-pagination'
-                         pageClassName='page'
-                         pageLinkClassName=''
-                         activeClassName='current-page'
-                         activeLinkClassName=''
-                         previousClassName='hide'
-                         nextClassName='hide'
-                         breakClassName=''
-                         breakLinkClassName=''
-                         onPageChange={e=>this.handlePageChange(e)}
-          />
-        }
-      </div>
-    );
+      );
+    } else {
+      return <LoadingPage />
+    }
   }
 }
 

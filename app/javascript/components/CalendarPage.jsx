@@ -10,6 +10,7 @@ import { openModalBox } from 'actions/modalBoxActions';
 import { newJob, viewJob } from 'actions/jobActions';
 import { logout } from 'actions/currentUserActions';
 import { setCalendarDates } from 'actions/refreshControlsActions';
+import LoadingPage from 'components/LoadingPage';
 
 function mapStateToProps(state){
   return{
@@ -37,7 +38,7 @@ class CalendarPage extends React.Component {
     super(props);
     this.state = {
       calendarDay: new Date(),
-      jobs: [],
+      jobs: null,
       statuses: ['active', 'finished', 'failed']
     };
   }
@@ -140,41 +141,45 @@ class CalendarPage extends React.Component {
   }
 
 	render() {
-	  return(
-	  	<div className='page-main-content calendar-page'>
-        <div className='page-content-header calendar-header'>
-          <div className='job-filter'>
-            <div className='filter-title'>Job Filter:</div>
-            <Form.Check name='active' className='text-danger' inline label='active' onChange={e=>this.handleCheckboxClick(e)} checked={this.state.statuses.includes('active')} />
-            <Form.Check name='finished' className='text-success' inline label='finished' onChange={e=>this.handleCheckboxClick(e)} checked={this.state.statuses.includes('finished')} />
-            <Form.Check name='failed' className='text-secondary' inline label='failed' onChange={e=>this.handleCheckboxClick(e)} checked={this.state.statuses.includes('failed')} />
-          </div>
-          {this.props.role == 'admin' &&
-            <Button variant="info" onClick={() => this.props.newJob()}>
-              Create New Job
-            </Button>
-          }
-        </div>
-		    <Calendar
-		      className='jobs-calendar'
-		      localizer={localizer}
-          views={['month']}
-		      events={this.filteredJobs()}
-		      startAccessor='start_date'
-		      endAccessor='end_date'
-          titleAccessor='name'
-          popup={true}
-          onDrillDown={e=>this.handleViewDay(e)}
-          components={
-            {
-              toolbar: this.customToolbar.bind(this),
+    if (this.state.jobs){
+  	  return(
+  	  	<div className='page-main-content calendar-page'>
+          <div className='page-content-header calendar-header'>
+            <div className='job-filter'>
+              <div className='filter-title'>Job Filter:</div>
+              <Form.Check name='active' className='text-danger' inline label='active' onChange={e=>this.handleCheckboxClick(e)} checked={this.state.statuses.includes('active')} />
+              <Form.Check name='finished' className='text-success' inline label='finished' onChange={e=>this.handleCheckboxClick(e)} checked={this.state.statuses.includes('finished')} />
+              <Form.Check name='failed' className='text-secondary' inline label='failed' onChange={e=>this.handleCheckboxClick(e)} checked={this.state.statuses.includes('failed')} />
+            </div>
+            {this.props.role == 'admin' &&
+              <Button variant="info" onClick={() => this.props.newJob()}>
+                Create New Job
+              </Button>
             }
-          }
-          eventPropGetter={this.eventStyleGetter}
-          onSelectEvent={(job, e) => this.props.viewJob(job.id)}
-		    />
-		  </div>
-	  );
+          </div>
+  		    <Calendar
+  		      className='jobs-calendar'
+  		      localizer={localizer}
+            views={['month']}
+  		      events={this.filteredJobs()}
+  		      startAccessor='start_date'
+  		      endAccessor='end_date'
+            titleAccessor='name'
+            popup={true}
+            onDrillDown={e=>this.handleViewDay(e)}
+            components={
+              {
+                toolbar: this.customToolbar.bind(this),
+              }
+            }
+            eventPropGetter={this.eventStyleGetter}
+            onSelectEvent={(job, e) => this.props.viewJob(job.id)}
+  		    />
+  		  </div>
+  	  );
+    } else {
+      return <LoadingPage />;
+    }
 	}
 }
 

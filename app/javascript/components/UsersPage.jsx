@@ -8,6 +8,7 @@ import { bindActionCreators } from 'redux';
 import { openModalBox } from 'actions/modalBoxActions';
 import { logout } from 'actions/currentUserActions';
 import UserFilter from 'components/UserFilter';
+import LoadingPage from 'components/LoadingPage';
 
 function mapStateToProps(state){
   return{
@@ -24,7 +25,7 @@ class UsersPage extends React.Component {
   constructor(props){
     super(props);
     this.state = {
-      users: [],
+      users: null,
       userFilter: {
         email: '',
         firstName: '',
@@ -137,76 +138,80 @@ class UsersPage extends React.Component {
   }
 
   render() {
-    return(
-      <div className='page-main-content users-page'>
-        <div className='page-content-header users-header'>
-          <UserFilter userFilter={this.state.userFilter} applyFilter={this.state.applyFilter} applyFilterChanged={this.state.applyFilterChanged} filterButtonVariant={this.filterButtonVariant()} handleUserFilterChange={(jobFilter, applyFilter, applyFilterChanged)=>this.handleUserFilterChange(jobFilter, applyFilter, applyFilterChanged)} />
-          {this.props.role == 'admin' &&
-            <Button variant="info">
-              Create New User
-            </Button>
+    if (this.state.users){
+      return(
+        <div className='page-main-content users-page'>
+          <div className='page-content-header users-header'>
+            <UserFilter userFilter={this.state.userFilter} applyFilter={this.state.applyFilter} applyFilterChanged={this.state.applyFilterChanged} filterButtonVariant={this.filterButtonVariant()} handleUserFilterChange={(jobFilter, applyFilter, applyFilterChanged)=>this.handleUserFilterChange(jobFilter, applyFilter, applyFilterChanged)} />
+            {this.props.role == 'admin' &&
+              <Button variant="info">
+                Create New User
+              </Button>
+            }
+          </div>
+          <Table responsive bordered hover className='user-table'>
+            <thead>
+              <tr>
+                <th>
+                  <a onClick={()=>this.handleSortClick('email')}>
+                    Email
+                    {this.sortIcon('email')}
+                  </a>
+                </th>
+                <th>
+                  <a onClick={()=>this.handleSortClick('first_name')}>
+                    Name
+                    {this.sortIcon('first_name')}
+                  </a>
+                </th>
+                <th>
+                  <a onClick={()=>this.handleSortClick('role')}>
+                    Role
+                    {this.sortIcon('role')}
+                  </a>
+                </th>
+                <th>
+                  <a onClick={()=>this.handleSortClick('archived')}>
+                    Archived
+                    {this.sortIcon('archived')}
+                  </a>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {this.state.users.map(user =>
+                <tr key={user.id} onClick={()=>this.props.history.push('/users/'+user.id)} >
+                  <td>{user.email}</td>
+                  <td>{user.full_name}</td>
+                  <td>{user.role}</td>
+                  <td>{user.archived ? 'True' : 'False'}</td>
+                </tr>
+              )}
+            </tbody>
+          </Table>
+          {this.state.totalPages > 1 &&
+            <ReactPaginate pageCount={this.state.totalPages}
+                           PageRangeDisplayed={3}
+                           marginPagesDisplayed={1}
+                           forcePage={this.state.page-1}
+                           disableInitialCallback={true}
+                           containerClassName='table-pagination'
+                           pageClassName='page'
+                           pageLinkClassName=''
+                           activeClassName='current-page'
+                           activeLinkClassName=''
+                           previousClassName='hide'
+                           nextClassName='hide'
+                           breakClassName=''
+                           breakLinkClassName=''
+                           onPageChange={e=>this.handlePageChange(e)}
+            />
           }
         </div>
-        <Table responsive bordered hover className='user-table'>
-          <thead>
-            <tr>
-              <th>
-                <a onClick={()=>this.handleSortClick('email')}>
-                  Email
-                  {this.sortIcon('email')}
-                </a>
-              </th>
-              <th>
-                <a onClick={()=>this.handleSortClick('first_name')}>
-                  Name
-                  {this.sortIcon('first_name')}
-                </a>
-              </th>
-              <th>
-                <a onClick={()=>this.handleSortClick('role')}>
-                  Role
-                  {this.sortIcon('role')}
-                </a>
-              </th>
-              <th>
-                <a onClick={()=>this.handleSortClick('archived')}>
-                  Archived
-                  {this.sortIcon('archived')}
-                </a>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.state.users.map(user =>
-              <tr key={user.id} >
-                <td>{user.email}</td>
-                <td>{user.full_name}</td>
-                <td>{user.role}</td>
-                <td>{user.archived ? 'True' : 'False'}</td>
-              </tr>
-            )}
-          </tbody>
-        </Table>
-        {this.state.totalPages > 1 &&
-          <ReactPaginate pageCount={this.state.totalPages}
-                         PageRangeDisplayed={3}
-                         marginPagesDisplayed={1}
-                         forcePage={this.state.page-1}
-                         disableInitialCallback={true}
-                         containerClassName='table-pagination'
-                         pageClassName='page'
-                         pageLinkClassName=''
-                         activeClassName='current-page'
-                         activeLinkClassName=''
-                         previousClassName='hide'
-                         nextClassName='hide'
-                         breakClassName=''
-                         breakLinkClassName=''
-                         onPageChange={e=>this.handlePageChange(e)}
-          />
-        }
-      </div>
-    );
+      );
+    } else {
+      return <LoadingPage />
+    }
   }
 }
 

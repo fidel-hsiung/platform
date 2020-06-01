@@ -5,6 +5,7 @@ import CalendarPage from 'components/CalendarPage';
 import DayJobsPage from 'components/DayJobsPage';
 import JobsPage from 'components/JobsPage';
 import UsersPage from 'components/UsersPage';
+import UserPage from 'components/UserPage';
 import LoginPage from 'components/LoginPage';
 import Header from 'components/Header';
 import LeftSideNav from 'components/LeftSideNav';
@@ -29,6 +30,7 @@ export default function Main(props) {
             <Route exact path="/" render={(props) => <CalendarPage {...props} history={history} />} />
             <Route path="/day" component={DayJobsPage} />
             <Route path="/jobs" component={JobsPage} />
+            <Route path="/users/:id" render={(props) => <UserPage {...props} history={history} />} />
             <Route path="/users" component={UsersPage} />
             <Route path="*" render={() => <Redirect to="/" />} />
           </Switch>

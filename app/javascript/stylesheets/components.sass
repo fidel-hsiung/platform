@@ -16,7 +16,7 @@
     font-weight: bold
   .info-content
     padding-left: $spacer/2
-    overflow-x: hidden
+    word-wrap: break-word
     display: flex
     flex: auto
     flex-flow: wrap
@@ -38,6 +38,13 @@
     .row
       width: 100%
 
+.user-info-group
+  margin-bottom: $spacer
+  .info-label
+    font-weight: bold
+    margin-bottom: $spacer/2
+  .info-content
+    word-wrap: break-word
 
 .job-form-modal
   .form-group
@@ -162,6 +169,9 @@
 .avatar
   height: 40px
   width: 40px
+  &.lg
+    height: 100px
+    width: 100px
   &.small
     height: 25px
     width: 25px

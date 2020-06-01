@@ -11,6 +11,7 @@ import { viewJob } from 'actions/jobActions';
 import { logout } from 'actions/currentUserActions';
 import { setJobsDate } from 'actions/refreshControlsActions';
 import { getDayFromHashParameter } from 'middlewares/custom';
+import LoadingPage from 'components/LoadingPage';
 
 function mapStateToProps(state){
   return{
@@ -29,7 +30,7 @@ class DayJobsPage extends React.Component {
     super(props);
     this.state = {
       day: getDayFromHashParameter(this.props.location.hash),
-      jobs: [],
+      jobs: null,
       sortBy: 'id',
       sortMethod: 'asc',
       onlyViewMyJobs: false
@@ -129,69 +130,73 @@ class DayJobsPage extends React.Component {
   }
 
   render() {
-    return(
-      <div className='page-main-content day-page'>
-        <div className='page-content-header day-header'>
-          <div className='day-tool-box'>
-            <FaCaretLeft style={{cursor: 'pointer'}} onClick={()=>this.goToPreviousDay()} />
-            <div className={'label-date'}>{this.state.day}</div>
-            <FaCaretRight style={{cursor: 'pointer'}} onClick={()=>this.goToNextDay()} />
+    if (this.state.jobs){
+      return(
+        <div className='page-main-content day-page'>
+          <div className='page-content-header day-header'>
+            <div className='day-tool-box'>
+              <FaCaretLeft style={{cursor: 'pointer'}} onClick={()=>this.goToPreviousDay()} />
+              <div className={'label-date'}>{this.state.day}</div>
+              <FaCaretRight style={{cursor: 'pointer'}} onClick={()=>this.goToNextDay()} />
+            </div>
+            <Form.Check className='text-primary' inline label='Only view my jobs' onChange={e=>this.handleOnlyViewMyJobsChange(e)} checked={this.state.onlyViewMyJobs} />
           </div>
-          <Form.Check className='text-primary' inline label='Only view my jobs' onChange={e=>this.handleOnlyViewMyJobsChange(e)} checked={this.state.onlyViewMyJobs} />
-        </div>
-        <Table responsive bordered hover className='job-table'>
-          <thead>
-            <tr>
-              <th>
-                <a onClick={()=>this.handleSortClick('name')}>
-                  Job Name
-                  {this.sortIcon('name')}
-                </a>
-              </th>
-              <th>
-                <a onClick={()=>this.handleSortClick('job_number')}>
-                  Job Number
-                  {this.sortIcon('job_number')}
-                </a>
-              </th>
-              <th>
-                <a onClick={()=>this.handleSortClick('status')}>
-                  Job status
-                  {this.sortIcon('status')}
-                </a>
-              </th>
-              <th>
-                <a onClick={()=>this.handleSortClick('start_date')}>
-                  Job Date Range
-                  {this.sortIcon('start_date')}
-                </a>
-              </th>
-              <th>
-                <a onClick={()=>this.handleSortClick('users_count')}>
-                  Job Attendees
-                  {this.sortIcon('users_count')}
-                </a>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.sortedJobs().map(job =>
-              <tr key={job.id} onClick={()=>this.props.viewJob(job.id)} >
-                <td>{job.name}</td>
-                <td>{job.job_number}</td>
-                <td>{job.status}</td>
-                <td>{job.start_date + ' to ' + job.end_date}</td>
-                <td className='attendees-td'>
-                  {job.users.map(user =>
-                    <img key={user.id} className="avatar small" title={user.full_name} src={user.avatar_url}></img>
-                  )}
-                </td>
+          <Table responsive bordered hover className='job-table'>
+            <thead>
+              <tr>
+                <th>
+                  <a onClick={()=>this.handleSortClick('name')}>
+                    Job Name
+                    {this.sortIcon('name')}
+                  </a>
+                </th>
+                <th>
+                  <a onClick={()=>this.handleSortClick('job_number')}>
+                    Job Number
+                    {this.sortIcon('job_number')}
+                  </a>
+                </th>
+                <th>
+                  <a onClick={()=>this.handleSortClick('status')}>
+                    Job status
+                    {this.sortIcon('status')}
+                  </a>
+                </th>
+                <th>
+                  <a onClick={()=>this.handleSortClick('start_date')}>
+                    Job Date Range
+                    {this.sortIcon('start_date')}
+                  </a>
+                </th>
+                <th>
+                  <a onClick={()=>this.handleSortClick('users_count')}>
+                    Job Attendees
+                    {this.sortIcon('users_count')}
+                  </a>
+                </th>
               </tr>
-            )}
-          </tbody>
-        </Table>
-      </div>
-    );
+            </thead>
+            <tbody>
+              {this.sortedJobs().map(job =>
+                <tr key={job.id} onClick={()=>this.props.viewJob(job.id)} >
+                  <td>{job.name}</td>
+                  <td>{job.job_number}</td>
+                  <td>{job.status}</td>
+                  <td>{job.start_date + ' to ' + job.end_date}</td>
+                  <td className='attendees-td'>
+                    {job.users.map(user =>
+                      <img key={user.id} className="avatar small" title={user.full_name} src={user.avatar_url}></img>
+                    )}
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </Table>
+        </div>
+      );
+    } else {
+      return <LoadingPage />
+    }
   }
 }
 

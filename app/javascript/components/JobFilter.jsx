@@ -93,9 +93,13 @@ class JobFilter extends React.Component {
     this.props.handleJobFilterChange(jobFilter, false, applyFilterChanged);
   }
 
+  handleToggle(isOpen, e, metadata){
+    this.setState({filterShow: isOpen});
+  }
+
   render(){
     return(
-      <Dropdown className='job-filter' show={this.state.filterShow}>
+      <Dropdown className='job-filter' show={this.state.filterShow} onToggle={(isOpen, e, metadata)=>this.handleToggle(isOpen, e, metadata)} >
         <Dropdown.Toggle variant={this.props.filterButtonVariant} onClick={()=>this.toggleFilter()}>
           Job Filter
         </Dropdown.Toggle>

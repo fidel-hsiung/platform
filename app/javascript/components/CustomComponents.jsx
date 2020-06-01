@@ -55,3 +55,16 @@ export function InfoGroupAttendees(props) {
     </div>
   );
 }
+
+export function UserInfoGroup(props) {
+  return(
+    <div className='user-info-group'>
+      <div className='info-label'>
+        {props.label}
+      </div>
+      <div className='info-content'>
+        {props.content}
+      </div>
+    </div>
+  );
+}

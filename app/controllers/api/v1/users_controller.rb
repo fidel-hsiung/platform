@@ -22,6 +22,12 @@ class Api::V1::UsersController < Api::V1::BaseController
     render json: {users: Api::V1::UserSerializer.new(sorted_users).to_custom_hash, total_pages: total_pages}
   end
 
+  def show
+    user = User.includes(:assigned_jobs).with_attached_avatar.find(params[:id])
+
+    render json: Api::V1::UserSerializer.new(user, params: {include_jobs: true}).to_custom_hash
+  end
+
 	def sign_in
     return error!({error: ['Email or password can not be blank']}, 401) if params[:email].blank? || params[:password].blank?
     user = User.find_by(email: params[:email])
