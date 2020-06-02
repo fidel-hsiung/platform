@@ -17,7 +17,7 @@ import JobView from 'components/JobView';
 export default function Main(props) {
 
   const authenticated = useSelector(state => state.currentUser.email != null);
-  const history = useHistory()
+  const history = useHistory();
 
   if (authenticated) {
     return(

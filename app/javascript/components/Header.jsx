@@ -2,16 +2,18 @@ import React from 'react';
 import { Navbar, Image } from 'react-bootstrap';
 import { BsBoxArrowRight } from 'react-icons/bs';
 import { useSelector, useDispatch } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { logout } from 'actions/currentUserActions';
 
 export default function App(props) {
 
   const currentUser = useSelector(state => state.currentUser);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   return(
     <Navbar className="header" bg="dark" variant="dark">
-      <Navbar.Brand href="#home">Platform</Navbar.Brand>
+      <Navbar.Brand><div className='platform-title' onClick={()=>history.push('/')}>Platform</div></Navbar.Brand>
       <Navbar.Toggle />
       <Navbar.Collapse className='justify-content-end'>
         <Navbar.Text className='font-italic mr-5'>
