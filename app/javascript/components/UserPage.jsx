@@ -29,7 +29,6 @@ class UserPage extends React.Component {
   }
 
   componentDidMount(){
-    console.log(this.props.match.params.id)
     this.getUser(this.props.match.params.id);
   }
 
@@ -46,7 +45,6 @@ class UserPage extends React.Component {
     })
     .then(processResponse)
     .then(response => {
-      console.log(response);
       this.setState({
         user: response.data
       });
@@ -71,9 +69,11 @@ class UserPage extends React.Component {
               </Button>
             </Link>
             {this.props.role == 'admin' &&
-              <Button variant="info">
-                Edit User
-              </Button>
+              <Link to={'/users/'+this.state.user.id+'/edit'}>
+                <Button variant="info">
+                  Edit User
+                </Button>
+              </Link>
             }
           </div>
           <div className='user-profile'>

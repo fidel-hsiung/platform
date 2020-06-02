@@ -62,6 +62,7 @@ class Api::V1::JobsController < Api::V1::BaseController
 	end
 
 	def update
+    error!({error: ["You don't have the permission!"]}) unless current_user.admin?
 		job = Job.find(params[:id])
     if job.update!(job_params)
       render json: Api::V1::JobSerializer.new(job).to_custom_hash

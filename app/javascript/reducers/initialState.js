@@ -17,8 +17,7 @@ export default {
     jobModalShow:             false,
     jobViewShow:              false,
     jobViewId:                null,
-    jobEditId:                null,
-    refreshJobView:           false
+    jobEditId:                null
   },
   user: {
     refreshUsersCollection:   false

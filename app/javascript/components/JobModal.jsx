@@ -8,6 +8,7 @@ import { closeJobModal } from 'actions/jobActions';
 import { openModalBox } from 'actions/modalBoxActions';
 import { checkJobRefresh } from 'actions/refreshControlsActions';
 import { processResponse } from 'middlewares/custom';
+import LoadingPage from 'components/LoadingPage';
 
 function mapStateToProps(state){
   return{
@@ -261,9 +262,11 @@ class JobModal extends React.Component{
     }
   }
 
-  render(){
-    return (
-      <Modal className='job-form-modal' show={this.props.show} onHide={() => this.props.closeJobModal()} dialogClassName='modal-lg'>
+  renderJobForm(){
+    if ((this.props.jobId && (this.state.job.id == null)) || (this.state.users.length == 0)) {
+      return <LoadingPage />
+    } else {
+      return (
         <Form noValidate onSubmit={e => this.handleSubmit(e)}>
           <Modal.Header closeButton>
             <Modal.Title>{this.props.jobId == null ? 'Create New' : 'Edit'} Job</Modal.Title>
@@ -291,6 +294,14 @@ class JobModal extends React.Component{
             <Button variant="secondary" onClick={() => this.props.closeJobModal()}>Close</Button>
           </Modal.Footer>
         </Form>
+      );
+    }
+  }
+
+  render(){
+    return (
+      <Modal className='job-form-modal' show={this.props.show} onHide={() => this.props.closeJobModal()} dialogClassName='modal-lg'>
+        {this.renderJobForm()}
       </Modal>
     );
   }
