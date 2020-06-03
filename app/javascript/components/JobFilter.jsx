@@ -5,7 +5,7 @@ import { bindActionCreators } from 'redux';
 import { openModalBox } from 'actions/modalBoxActions';
 import { logout } from 'actions/currentUserActions';
 import { Form, Button, Dropdown } from 'react-bootstrap';
-import { FilterFormInput, FilterFormMultiSelect, FilterFormDateRange } from 'components/CustomFormComponents';
+import { FormInput, FilterFormMultiSelect, FilterFormDateRange } from 'components/CustomFormComponents';
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({openModalBox, logout}, dispatch)
@@ -77,9 +77,9 @@ class JobFilter extends React.Component {
     }
   }
 
-  handleJobFilterInputChange(e, name){
+  handleJobFilterInputChange(value, name){
     let jobFilter = this.state.jobFilter;
-    jobFilter[name] = e;
+    jobFilter[name] = value;
     this.setState({jobFilter: jobFilter});
   }
 
@@ -106,12 +106,12 @@ class JobFilter extends React.Component {
 
         <Dropdown.Menu>
           <Form noValidate onSubmit={e=>this.handleSubmit(e)} >
-            <FilterFormInput name='name' label='Name' placeholder='Job name' value={this.state.jobFilter.name} handleChange={e=>this.handleJobFilterInputChange(e, 'name')} />
-            <FilterFormInput name='jobNumber' label='Job Number' placeholder='Job number' value={this.state.jobFilter.jobNumber} handleChange={e=>this.handleJobFilterInputChange(e, 'jobNumber')} />
-            <FilterFormMultiSelect name='statuses' label='Status' placeholder='Select status' value={this.state.jobFilter.statuses} options={[{value: 'pending', label: 'Pending'}, {value: 'active', label: 'Active'}, {value: 'finished', label: 'Finished'}, {value: 'failed', label: 'Failed'}]} handleChange={e=>this.handleJobFilterInputChange(e, 'statuses')} />
-            <FilterFormDateRange startDate={this.state.jobFilter.startDate} endDate={this.state.jobFilter.endDate} handleStartDateChange={e=>this.handleJobFilterInputChange(e, 'startDate')} handleEndDateChange={e=>this.handleJobFilterInputChange(e, 'endDate')} />
-            <FilterFormMultiSelect name='attendeeIds' label='Attendees' placeholder='Select Attendees' value={this.state.jobFilter.attendeeIds} options={this.state.users.map(user => {return {value: user.id, label: user.full_name}})} handleChange={e=>this.handleJobFilterInputChange(e, 'attendeeIds')} />
-            <FilterFormMultiSelect name='creatorIds' label='Creators' placeholder='Select Creators' value={this.state.jobFilter.creatorIds} options={this.state.users.filter(user=>{return user.role == 'admin'}).map(user => {return {value: user.id, label: user.full_name}})} handleChange={e=>this.handleJobFilterInputChange(e, 'creatorIds')} />
+            <FormInput name='name' label='Name' placeholder='Job name' value={this.state.jobFilter.name} handleChange={value=>this.handleJobFilterInputChange(value, 'name')} />
+            <FormInput name='jobNumber' label='Job Number' placeholder='Job number' value={this.state.jobFilter.jobNumber} handleChange={value=>this.handleJobFilterInputChange(value, 'jobNumber')} />
+            <FilterFormMultiSelect name='statuses' label='Status' placeholder='Select status' value={this.state.jobFilter.statuses} options={[{value: 'pending', label: 'Pending'}, {value: 'active', label: 'Active'}, {value: 'finished', label: 'Finished'}, {value: 'failed', label: 'Failed'}]} handleChange={value=>this.handleJobFilterInputChange(value, 'statuses')} />
+            <FilterFormDateRange startDate={this.state.jobFilter.startDate} endDate={this.state.jobFilter.endDate} handleStartDateChange={value=>this.handleJobFilterInputChange(value, 'startDate')} handleEndDateChange={value=>this.handleJobFilterInputChange(value, 'endDate')} />
+            <FilterFormMultiSelect name='attendeeIds' label='Attendees' placeholder='Select Attendees' value={this.state.jobFilter.attendeeIds} options={this.state.users.map(user => {return {value: user.id, label: user.full_name}})} handleChange={value=>this.handleJobFilterInputChange(value, 'attendeeIds')} />
+            <FilterFormMultiSelect name='creatorIds' label='Creators' placeholder='Select Creators' value={this.state.jobFilter.creatorIds} options={this.state.users.filter(user=>{return user.role == 'admin'}).map(user => {return {value: user.id, label: user.full_name}})} handleChange={value=>this.handleJobFilterInputChange(value, 'creatorIds')} />
             <div className='d-flex justify-content-end'>
               <Button type='submit' className='mr-2' >Apply Filter</Button>
               <Button variant='secondary' onClick={()=>this.clearFilter()} >Clear</Button>

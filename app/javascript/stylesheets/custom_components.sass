@@ -1,0 +1,57 @@
+/** InfoGroup **/
+.info-group
+  display: flex
+  padding: $spacer/2 0
+  .info-label
+    flex: 0 0 25%
+    padding-right: $spacer/2
+    font-weight: bold
+  .info-content
+    padding-left: $spacer/2
+    word-wrap: break-word
+    display: flex
+    flex: auto
+    flex-flow: wrap
+    align-items: center
+    &.image-content
+      padding-left: 0
+      margin-left: $spacer/2
+      overflow: auto
+      padding-bottom: 4px
+    &::-webkit-scrollbar
+      -webkit-appearance: none
+      height: 8px
+    &::-webkit-scrollbar-track
+      border: 1px solid $black
+      border-radius: 5px
+    &::-webkit-scrollbar-thumb
+      border-radius: 5px
+      background-color: $black
+    .row
+      width: 100%
+
+
+/** InfoGroupRichText **/
+.richtext-content
+  max-height: 300px
+  &::-webkit-scrollbar
+    -webkit-appearance: none
+    width: 8px
+  &::-webkit-scrollbar-track
+    border: 1px solid $black
+    border-radius: 5px
+  &::-webkit-scrollbar-thumb
+    border-radius: 5px
+    background-color: $black
+  h1, h2, h3, h4, h5, h6, p
+    margin-bottom: 0
+
+
+/** UserInfoGroup **/
+.user-info-group
+  margin-bottom: $spacer
+  .info-label
+    font-weight: bold
+    margin-bottom: $spacer/2
+  .info-content
+    word-wrap: break-word

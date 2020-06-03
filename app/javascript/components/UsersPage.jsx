@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Table, Form, Button } from 'react-bootstrap';
 import { FaSort, FaSortUp, FaSortDown, FaCaretLeft, FaCaretRight } from 'react-icons/fa';
 import ReactPaginate from 'react-paginate';
@@ -144,9 +145,11 @@ class UsersPage extends React.Component {
           <div className='page-content-header users-header'>
             <UserFilter userFilter={this.state.userFilter} applyFilter={this.state.applyFilter} applyFilterChanged={this.state.applyFilterChanged} filterButtonVariant={this.filterButtonVariant()} handleUserFilterChange={(jobFilter, applyFilter, applyFilterChanged)=>this.handleUserFilterChange(jobFilter, applyFilter, applyFilterChanged)} />
             {this.props.role == 'admin' &&
-              <Button variant="info">
-                Create New User
-              </Button>
+              <Link to='/users/new' >
+                <Button variant="info">
+                  Create New User
+                </Button>
+              </Link>
             }
           </div>
           <Table responsive bordered hover className='user-table'>
@@ -184,7 +187,7 @@ class UsersPage extends React.Component {
                   <td>{user.email}</td>
                   <td>{user.full_name}</td>
                   <td>{user.role}</td>
-                  <td>{user.archived ? 'True' : 'False'}</td>
+                  <td>{user.archived == '1' ? 'True' : 'False'}</td>
                 </tr>
               )}
             </tbody>

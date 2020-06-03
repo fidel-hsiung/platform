@@ -103,6 +103,26 @@ main
               font-size: 1.2rem
               color: $red
 
+      &.user-form-page
+        max-width: 800px
+        margin: 0 auto
+        .user-form-header
+        .user-form
+          margin-top: 20px
+          background-color: $gray-200
+          border-radius: 10px
+          padding: $spacer
+          .user-avatar-input
+            display: flex
+            margin-bottom: 20px
+            .form-upload-input
+              flex-grow: 1
+          .form-actions
+            display: flex
+            flex-wrap: wrap
+            align-items: center
+            justify-content: flex-end
+
 
 .login-page
   min-height: 100vh
@@ -135,6 +155,3 @@ main
   width: 100%
   min-height: 100vh
   +flex()
-
-.hide
-  display: none

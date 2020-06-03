@@ -1,5 +1,5 @@
-import React from 'react';
-import { Form, Row, Col } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Form, Row, Col, Button } from 'react-bootstrap';
 import Select from 'react-select';
 import PlacesAutocomplete from 'react-places-autocomplete';
 import moment from 'moment';
@@ -11,7 +11,7 @@ export function FormInput (props) {
     <Form.Group as={Row}>
       <Form.Label column sm='3'>{props.label}</Form.Label>
       <Col sm='9'>
-        <Form.Control type='text' name={props.name} placeholder={props.placeholder} value={props.value} onChange={e => props.handleChange(e)} isInvalid={props.error} />
+        <Form.Control type='text' placeholder={props.placeholder} value={props.value} onChange={e => props.handleChange(e.target.value)} isInvalid={props.error} />
         <Form.Control.Feedback type='invalid'>{props.error}</Form.Control.Feedback>
       </Col>
     </Form.Group>
@@ -19,14 +19,18 @@ export function FormInput (props) {
 }
 
 export function FormSelect (props) {
+
+  let temp = props.options.find(e=>e.value == props.value);
+  let value = temp ? temp : '';
+
   return(
     <Form.Group as={Row}>
       <Form.Label column sm='3'>{props.label}</Form.Label>
       <Col sm='9'>
         <Select
-          value={props.options.find(e=>e.value == props.value)}
+          value={value}
           options={props.options}
-          onChange={e => props.handleChange(e, props.name)}
+          onChange={e => props.handleChange(e ? e.value : '')}
           placeholder={props.placeholder}
           className="basic-multi-select"
           classNamePrefix="select"
@@ -145,18 +149,6 @@ export function FormRichTextInput (props) {
   );
 }
 
-export function FilterFormInput (props) {
-  return(
-    <Form.Group as={Row}>
-      <Form.Label column sm='3'>{props.label}</Form.Label>
-      <Col sm='9'>
-        <Form.Control type='text' placeholder={props.placeholder} value={props.value} onChange={e => props.handleChange(e.target.value)} />
-        <Form.Control.Feedback type='invalid'>{props.error}</Form.Control.Feedback>
-      </Col>
-    </Form.Group>
-  );
-}
-
 export function FilterFormMultiSelect (props) {
 
   let temp = props.options.filter(option => {return props.value.indexOf(option.value) != -1})
@@ -197,25 +189,40 @@ export function FilterFormDateRange (props) {
   );
 }
 
-export function FilterFormSelect (props) {
+export function FormImageUpload (props) {
 
-  let temp = props.options.find(e=>e.value == props.value);
-  let value = temp ? temp : '';
+  const [fileName, setFileName] = useState('');
+
+  useEffect(()=>{
+    if (props.image){
+      setFileName(props.image.name);
+    } else {
+      setFileName('');
+    }
+    if (!!props.image) {
+    }
+  }, [props.image]);
+
+  function handleUploadChange(e){
+    let image = e.target.files[0]
+    props.handleChange(image, props.name)
+  }
 
   return(
-    <Form.Group as={Row}>
-      <Form.Label column sm='3'>{props.label}</Form.Label>
-      <Col sm='9'>
-        <Select
-          value={value}
-          options={props.options}
-          onChange={e => props.handleChange(e ? e.value : '')}
-          placeholder={props.placeholder}
-          className="basic-multi-select"
-          classNamePrefix="select"
-        />
-        <div className='error'>{props.error}</div>
-      </Col>
-    </Form.Group>
+    <div className='form-upload-input'>
+      <label>
+        <div className="btn btn-outline-dark">{props.buttonText}</div>
+        <div className='hide'>
+          <input
+            type="file"
+            accept="image/jpg, image/jpeg, image/png"
+            onChange={e=>handleUploadChange(e)}
+          />
+        </div>
+      </label>
+      <u className='file-name'>
+        {fileName}
+      </u>
+    </div>
   );
 }

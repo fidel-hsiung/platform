@@ -22,10 +22,31 @@ class Api::V1::UsersController < Api::V1::BaseController
     render json: {users: Api::V1::UserSerializer.new(sorted_users).to_custom_hash, total_pages: total_pages}
   end
 
+  def create
+    generated_password = 8.times.map{rand(9)}.join
+    user = User.new(user_params.merge(password: generated_password))
+    if user.save
+      SystemMailer.welcome_user(user.full_name, user.email, generated_password).deliver_later
+      render json: Api::V1::UserSerializer.new(user).to_custom_hash
+    else
+      error!({error: user.errors}, 422)
+    end
+  end
+
   def show
     user = User.includes(:assigned_jobs).with_attached_avatar.find(params[:id])
 
     render json: Api::V1::UserSerializer.new(user, params: {include_jobs: true}).to_custom_hash
+  end
+
+  def update
+    error!({error: ["You don't have the permission!"]}) unless current_user.admin? || current_user.id == params[:id]
+    user = User.find(params[:id])
+    if user.update!(user_params)
+      render json: Api::V1::UserSerializer.new(user).to_custom_hash
+    else
+      error!({error: user.errors}, 422)
+    end
   end
 
 	def sign_in
@@ -47,5 +68,11 @@ class Api::V1::UsersController < Api::V1::BaseController
   def users_collection
     users = User.unarchived.with_attached_avatar
     render json: {users: Api::V1::UserSerializer.new(users).to_custom_hash}
+  end
+
+  private
+
+  def user_params
+    params.require(:user).permit(:email, :first_name, :last_name, :role, :archived, :avatar)
   end
 end

@@ -1,3 +1,6 @@
+.hide
+  display: none
+
 .rbc-event
   &.active
     background-color: $danger
@@ -6,45 +9,6 @@
   &.failed
     background-color: $secondary
 
-
-.info-group
-  display: flex
-  padding: $spacer/2 0
-  .info-label
-    flex: 0 0 25%
-    padding-right: $spacer/2
-    font-weight: bold
-  .info-content
-    padding-left: $spacer/2
-    word-wrap: break-word
-    display: flex
-    flex: auto
-    flex-flow: wrap
-    align-items: center
-    &.image-content
-      padding-left: 0
-      margin-left: $spacer/2
-      overflow: auto
-      padding-bottom: 4px
-    &::-webkit-scrollbar
-      -webkit-appearance: none
-      height: 8px
-    &::-webkit-scrollbar-track
-      border: 1px solid $black
-      border-radius: 5px
-    &::-webkit-scrollbar-thumb
-      border-radius: 5px
-      background-color: $black
-    .row
-      width: 100%
-
-.user-info-group
-  margin-bottom: $spacer
-  .info-label
-    font-weight: bold
-    margin-bottom: $spacer/2
-  .info-content
-    word-wrap: break-word
 
 .job-form-modal
   .form-group
@@ -56,76 +20,6 @@
       font-size: 80%
       color: $red
 
-
-.input-with-autocomplete
-  position: relative
-  .autocomplete-dropdown-container
-    position: absolute
-    width: 100%
-    z-index: 13
-    > div:first-child
-      border-top: 1px solid $light-gray
-    > div:last-child
-      border-bottom: 1px solid $light-gray
-      border-bottom-left-radius: 0.25rem
-      border-bottom-right-radius: 0.25rem
-    .loading
-      display: none
-    .suggestion-item, .suggestion-item--active
-      border-left: 1px solid $light-gray
-      border-right: 1px solid $light-gray
-      padding: 2px 10px
-      p
-        margin: 0
-
-
-.quill
-  .ql-toolbar
-    border-top-right-radius: 0.25rem
-    border-top-left-radius: 0.25rem
-    .ql-picker-options .ql-picker-item
-      line-height: 1.2
-  .ql-container
-    border-bottom-right-radius: 0.25rem
-    border-bottom-left-radius: 0.25rem
-    .ql-editor
-      min-height: 200px
-      max-height: 500px
-      overflow-y: auto
-      &::-webkit-scrollbar
-        -webkit-appearance: none
-        width: 8px
-      &::-webkit-scrollbar-thumb
-        background-color: $border
-
-  &.is-invalid
-    .ql-toolbar
-      border-color: $red
-    .ql-container
-      border-color: $red
-
-.richtext-content
-  max-height: 300px
-  &::-webkit-scrollbar
-    -webkit-appearance: none
-    width: 8px
-  &::-webkit-scrollbar-track
-    border: 1px solid $black
-    border-radius: 5px
-  &::-webkit-scrollbar-thumb
-    border-radius: 5px
-    background-color: $black
-  h1, h2, h3, h4, h5, h6, p
-    margin-bottom: 0
-
-
-.basic-multi-select
-  .css-1pahdxg-control
-    border: 1px solid #80BDFF
-    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25)
-    &:hover
-      border: 1px solid #80BDFF
-      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25)
 
 .user-form-title
   display: flex
@@ -169,6 +63,9 @@
 .avatar
   height: 40px
   width: 40px
+  &.xlg
+    height: 200px
+    width: 200px
   &.lg
     height: 100px
     width: 100px
@@ -179,43 +76,3 @@
     height: 18px
     width: 18px
     flex: 0 0 18px
-
-.table-responsive
-  table.job-table
-    thead
-      th
-        a
-          cursor: pointer
-    tbody
-      tr
-        cursor: pointer
-        td.attendees-td
-          img
-            margin-right: 3px
-            &:last-of-type
-              margin-right: 0px
-
-
-.table-pagination
-  +flex
-  margin: 0 0 20px 0
-  li
-    list-style: none
-    margin-right: 8px
-    &:last-child
-      margin-right: 0
-    > a
-      cursor: pointer
-      height: 28px
-      width: 28px
-      +flex
-      border-radius: 50%
-      font-weight: 600
-      &:hover
-        background-color: $light-gray
-    &.current-page > a
-      background-color: $sidenav-bg-color
-      color: $white
-    &.disabled
-      pointer-events: none
-      opacity: 0.5

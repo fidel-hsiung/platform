@@ -80,7 +80,7 @@ class UserPage extends React.Component {
             <img className="avatar lg" src={this.state.user.avatar_url}></img>
             <div className='user-name'>
               <div className='name'>{this.state.user.full_name}</div>
-              {this.state.user.archived &&
+              {this.state.user.archived == '1' &&
                 <div className='status'>(archived)</div>
               }
             </div>

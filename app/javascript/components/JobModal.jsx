@@ -111,16 +111,9 @@ class JobModal extends React.Component{
     });
   }
 
-  handleInputChange(e){
+  handleInputChange(value, name){
     let job = this.state.job;
-    const target = e.target;
-    job[target.name] = target.value;
-    this.setState({job: job});
-  }
-
-  handleSelectChange(e, name){
-    let job = this.state.job;
-    job[name] = e.value;
+    job[name] = value;
     this.setState({job: job});
   }
 
@@ -272,9 +265,9 @@ class JobModal extends React.Component{
             <Modal.Title>{this.props.jobId == null ? 'Create New' : 'Edit'} Job</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <FormInput name='name' label='Name' placeholder='Enter job name' value={this.state.job.name} handleChange={e => this.handleInputChange(e)} error={this.state.job.errors.name} />
-            <FormInput name='job_number' label='Job Number' placeholder='Enter job number' value={this.state.job.job_number} handleChange={e => this.handleInputChange(e)} error={this.state.job.errors.job_number} />
-            <FormSelect name='status' label='Status' placeholder='Select job status' value={this.state.job.status} options={[{value: 'pending', label: 'Pending'}, {value: 'active', label: 'Active'}, {value: 'finished', label: 'Finished'}, {value: 'failed', label: 'Failed'}]} handleChange={(e, name)=>this.handleSelectChange(e, name)} error={this.state.job.errors.status} />
+            <FormInput label='Name' placeholder='Enter job name' value={this.state.job.name} handleChange={value => this.handleInputChange(value, 'name')} error={this.state.job.errors.name} />
+            <FormInput label='Job Number' placeholder='Enter job number' value={this.state.job.job_number} handleChange={value => this.handleInputChange(value, 'job_number')} error={this.state.job.errors.job_number} />
+            <FormSelect label='Status' placeholder='Select job status' value={this.state.job.status} options={[{value: 'pending', label: 'Pending'}, {value: 'active', label: 'Active'}, {value: 'finished', label: 'Finished'}, {value: 'failed', label: 'Failed'}]} handleChange={value=>this.handleInputChange(value, 'status')} error={this.state.job.errors.status} />
             <FormDatePicker name='start_date' label='Start Date' placeholder='Enter job start date' value={this.state.job.start_date} handleChange={(e, name)=>this.handleDateChange(e, name)} error={this.state.job.errors.start_date} />
             <FormDatePicker name='end_date' label='End Date' placeholder='Enter job end date' value={this.state.job.end_date} handleChange={(e, name)=>this.handleDateChange(e, name)} error={this.state.job.errors.end_date} />
             <FormAddress name='location' label='Location' placeholder='Enter job location' value={this.state.job.location} handleChange={(e, name) => this.handlePluginInputChange(e, name)} error={this.state.job.errors.location} />

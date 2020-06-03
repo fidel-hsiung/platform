@@ -1,0 +1,39 @@
+.table-responsive
+  table.job-table
+    thead
+      th
+        a
+          cursor: pointer
+    tbody
+      tr
+        cursor: pointer
+        td.attendees-td
+          img
+            margin-right: 3px
+            &:last-of-type
+              margin-right: 0px
+
+
+.table-pagination
+  +flex
+  margin: 0 0 20px 0
+  li
+    list-style: none
+    margin-right: 8px
+    &:last-child
+      margin-right: 0
+    > a
+      cursor: pointer
+      height: 28px
+      width: 28px
+      +flex
+      border-radius: 50%
+      font-weight: 600
+      &:hover
+        background-color: $light-gray
+    &.current-page > a
+      background-color: $sidenav-bg-color
+      color: $white
+    &.disabled
+      pointer-events: none
+      opacity: 0.5
