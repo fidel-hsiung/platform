@@ -12,7 +12,7 @@ import { FormImageUpload, FormInput, FormSelect } from 'components/CustomFormCom
 
 function mapStateToProps(state){
   return{
-    role: state.currentUser.role
+    currentUserId: state.currentUser.id
   }
 }
 
@@ -25,7 +25,9 @@ const emptyUser = {
   first_name: '',
   last_name: '',
   email: '',
-  role: 'employee',
+  password: '',
+  password_confirmation: '',
+  role: '',
   archived: '',
   avatar: '',
   avatar_url: '',
@@ -57,8 +59,11 @@ class UserFormPage extends React.Component {
     })
     .then(processResponse)
     .then(response => {
+      let user = response.data;
+      user.password = '';
+      user.password_confirmation = '';
       this.setState({
-        user: response.data
+        user: user
       });
     })
     .catch(response => {
@@ -80,6 +85,7 @@ class UserFormPage extends React.Component {
     let user = this.state.user;
     URL.revokeObjectURL(user[name]);
     user[name] = image;
+    console.log(user);
     this.setState({user: user});
   }
 
@@ -111,33 +117,31 @@ class UserFormPage extends React.Component {
     e.preventDefault();
     e.stopPropagation();
 
-    let user = Object.assign({}, this.state.user);
-    delete user['id'];
-    delete user['errors'];
-    delete user['assigned_active_jobs_count']
-    delete user['assigned_failed_jobs_count']
-    delete user['assigned_finished_jobs_count']
-    delete user['assigned_jobs_count']
-    delete user['avatar_url']
-    if (!user.avatar) {
-      delete user['avatar']
+    const formData = new FormData();
+    formData.append('user[email]', this.state.user.email);
+    formData.append('user[first_name]', this.state.user.first_name);
+    formData.append('user[last_name]', this.state.user.last_name);
+    formData.append('user[password]', this.state.user.password);
+    formData.append('user[password_confirmation]', this.state.user.password_confirmation);
+    formData.append('user[role]', this.state.user.role);
+    formData.append('user[archived]', this.state.user.archived);
+    if (this.state.user.avatar){
+      formData.append('user[avatar]', this.state.user.avatar);
     }
 
-    const data = {user: user}
     const url = this.props.match.params.id ? '/api/v1/users/' + this.props.match.params.id : '/api/v1/users'
     const method = this.props.match.params.id ? 'PUT' : 'POST'
 
     fetch(url, {
       method: method,
       headers: {
-        'Content-Type': 'application/json',
         'X-USER-AUTH-TOKEN': localStorage.getItem('authToken')
       },
-      body: JSON.stringify(data)
+      body: formData
     })
     .then(processResponse)
     .then(response => {
-      this.props.history.push('/users/'+this.props.match.params.id)
+      this.props.history.push('/users/'+response.data.id)
     })
     .catch(response => {
       if (response.status == 401){
@@ -177,6 +181,12 @@ class UserFormPage extends React.Component {
               <FormImageUpload buttonText='Upload avatar' image={this.state.user.avatar} handleChange={image => this.handleImageUploadChange(image, 'avatar')} />
             </div>
             <FormInput label='Email' placeholder='Enter user email' value={this.state.user.email} handleChange={value => this.handleInputChange(value, 'email')} error={this.state.user.errors.email} />
+            {this.props.currentUserId == this.state.user.id &&
+              <React.Fragment>
+                <FormInput label='Password' type='password' placeholder='Enter user password' value={this.state.user.password} handleChange={value => this.handleInputChange(value, 'password')} error={this.state.user.errors.password} />
+                <FormInput label='Password Confirmation' type='password' placeholder='User Password Confirmation' value={this.state.user.password_confirmation} handleChange={value => this.handleInputChange(value, 'password_confirmation')} error={this.state.user.errors.password_confirmation} />
+              </React.Fragment>
+            }
             <FormInput label='First Name' placeholder='Enter user first name' value={this.state.user.first_name} handleChange={value => this.handleInputChange(value, 'first_name')} error={this.state.user.errors.first_name} />
             <FormInput label='Last Name' placeholder='Enter user last name' value={this.state.user.last_name} handleChange={value => this.handleInputChange(value, 'last_name')} error={this.state.user.errors.last_name} />
             <FormSelect label='Role' placeholder='Select user role' value={this.state.user.role} options={[{value: 'employee', label: 'Employee'}, {value: 'contract', label: 'Contract'}, {value: 'admin', label: 'Admin'}]} handleChange={value=>this.handleInputChange(value, 'role')} error={this.state.user.errors.role} />

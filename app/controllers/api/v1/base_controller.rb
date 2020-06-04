@@ -12,6 +12,7 @@ class Api::V1::BaseController < ActionController::API
 
   before_action :authenticate!
   before_action :load_data
+  before_action :set_host_for_local_storage
 
 
   rescue_from Exception do |exception|
@@ -63,5 +64,9 @@ class Api::V1::BaseController < ActionController::API
 
   def load_data
     self.content_type = 'application/json'
+  end
+
+  def set_host_for_local_storage
+    ActiveStorage::Current.host = request.base_url unless Rails.application.config.active_storage.service == :amazon
   end
 end

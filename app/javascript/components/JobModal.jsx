@@ -25,7 +25,7 @@ function mapDispatchToProps(dispatch) {
 const emptyJob = {
   id: null,
   name: '',
-  status: 'pending',
+  status: '',
   job_number: '',
   location: '',
   start_date: '',

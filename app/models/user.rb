@@ -1,4 +1,7 @@
 class User < ApplicationRecord
+
+  attr_accessor :password_confirmation
+
   has_secure_password
   has_one_customized_attached :avatar, default: 'media/images/default-user.png'
 
@@ -6,7 +9,8 @@ class User < ApplicationRecord
   has_many :user_jobs
   has_many :assigned_jobs, through: :user_jobs, source: :job
 
-  validates_presence_of :email, :first_name, :last_name
+  validates_presence_of :email, :first_name, :last_name, :role
+  validates :archived, inclusion: { in: [true, false] }
   validates_uniqueness_of :email
 
   before_save :downcase_email

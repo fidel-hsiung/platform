@@ -11,7 +11,8 @@ import LoadingPage from 'components/LoadingPage';
 
 function mapStateToProps(state){
   return{
-    role: state.currentUser.role
+    role: state.currentUser.role,
+    currentUserId: state.currentUser.id
   }
 }
 
@@ -33,6 +34,9 @@ class UserPage extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState){
+    if(this.props.match.params.id != prevProps.match.params.id){
+      this.getUser(this.props.match.params.id);
+    }
   }
 
   getUser(id){
@@ -68,7 +72,7 @@ class UserPage extends React.Component {
                 Back
               </Button>
             </Link>
-            {this.props.role == 'admin' &&
+            {(this.props.role == 'admin' || this.props.currentUserId == this.state.user.id) &&
               <Link to={'/users/'+this.state.user.id+'/edit'}>
                 <Button variant="info">
                   Edit User

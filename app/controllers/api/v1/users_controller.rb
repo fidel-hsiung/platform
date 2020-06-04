@@ -24,7 +24,7 @@ class Api::V1::UsersController < Api::V1::BaseController
 
   def create
     generated_password = 8.times.map{rand(9)}.join
-    user = User.new(user_params.merge(password: generated_password))
+    user = User.new(user_params.merge(password: generated_password, password_confirmation: generated_password))
     if user.save
       SystemMailer.welcome_user(user.full_name, user.email, generated_password).deliver_later
       render json: Api::V1::UserSerializer.new(user).to_custom_hash
@@ -42,7 +42,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   def update
     error!({error: ["You don't have the permission!"]}) unless current_user.admin? || current_user.id == params[:id]
     user = User.find(params[:id])
-    if user.update!(user_params)
+    if user.update(user_params)
       render json: Api::V1::UserSerializer.new(user).to_custom_hash
     else
       error!({error: user.errors}, 422)
@@ -73,6 +73,6 @@ class Api::V1::UsersController < Api::V1::BaseController
   private
 
   def user_params
-    params.require(:user).permit(:email, :first_name, :last_name, :role, :archived, :avatar)
+    params.require(:user).permit(:email, :first_name, :last_name, :role, :archived, :avatar, :password, :password_confirmation)
   end
 end

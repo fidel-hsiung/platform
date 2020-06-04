@@ -19,7 +19,7 @@ module Storageable
 
         def #{attach_attr_string}_url(size="")
           if #{attach_attr_string}.attached?
-            Rails.application.routes.url_helpers.rails_blob_path(#{attach_attr_string}, only_path: true)
+            Rails.application.routes.url_helpers.rails_blob_url(#{attach_attr_string}, only_path: true)
           else
             "#{attach_default_path}".present? ? ApplicationController.helpers.asset_pack_url("#{attach_default_path}") : ""
           end

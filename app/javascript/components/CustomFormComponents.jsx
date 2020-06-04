@@ -11,7 +11,7 @@ export function FormInput (props) {
     <Form.Group as={Row}>
       <Form.Label column sm='3'>{props.label}</Form.Label>
       <Col sm='9'>
-        <Form.Control type='text' placeholder={props.placeholder} value={props.value} onChange={e => props.handleChange(e.target.value)} isInvalid={props.error} />
+        <Form.Control type={props.type ? props.type : 'text'} placeholder={props.placeholder} value={props.value} onChange={e => props.handleChange(e.target.value)} isInvalid={props.error} />
         <Form.Control.Feedback type='invalid'>{props.error}</Form.Control.Feedback>
       </Col>
     </Form.Group>

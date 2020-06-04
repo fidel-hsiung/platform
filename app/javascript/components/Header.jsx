@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Navbar, Image } from 'react-bootstrap';
 import { BsBoxArrowRight } from 'react-icons/bs';
 import { useSelector, useDispatch } from 'react-redux';
@@ -17,9 +18,11 @@ export default function App(props) {
       <Navbar.Toggle />
       <Navbar.Collapse className='justify-content-end'>
         <Navbar.Text className='font-italic mr-5'>
-          <u>
-            Hello, {currentUser.first_name} {currentUser.last_name}
-          </u>
+          <Link to={'/users/'+currentUser.id}>
+            <u>
+              Hello, {currentUser.first_name} {currentUser.last_name}
+            </u>
+          </Link>
           <img className={'header-avatar'} src={currentUser.avatar_url}></img>
         </Navbar.Text>
         <BsBoxArrowRight size={28} color={'white'} style={{cursor: 'pointer'}} onClick={()=>dispatch(logout())} />
