@@ -1,24 +1,35 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+This is a project management platform built with Rails + React. Admins can create jobs and assign to users. Users can only view jobs. Admins have the permission for jobs CRUD, users CRUD. Users only have the permission for jobs read, and users read, however, they can modify their own profile.
 
-Things you may want to cover:
+System configurations:
 
-* Ruby version
+* Ruby version 2.6.0
 
-* System dependencies
+* Rails version 6.0.2
 
-* Configuration
+* React version 16.13.1
 
-* Database creation
+* Database PG
 
-* Database initialization
+Implementations
 
-* How to run the test suite
+* Authentication with bcrypt gem
 
-* Services (job queues, cache servers, search engines, etc.)
+* JWT for user authentication
 
-* Deployment instructions
+* React big calendar for jobs calendar view
 
-* ...
+* Action cable for auto sync calendar jobs
+
+* React redux for global state storage
+
+* React router
+
+To be finished:
+
+Docker
+
+Auto script test
+
+Log system to record admins and users log history.
