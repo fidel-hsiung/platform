@@ -2,7 +2,8 @@ import initialState from 'reducers/initialState';
 import {
   SET_CALENDAR_DATES,
   SET_JOBS_DATE,
-  CHECK_JOB_REFRESH
+  CHECK_JOB_REFRESH,
+  REFRESH_USERS_COLLECTION
 } from '../constants/actionTypes';
 
 export default (state = initialState.refreshControls, action) => {
@@ -42,6 +43,12 @@ export default (state = initialState.refreshControls, action) => {
         refreshCalendar: refreshCalendar,
         refreshDayJobsList: refreshDayJobsList,
         refreshJobsList: refreshJobsList
+      }
+    case REFRESH_USERS_COLLECTION:
+      let refreshUsersCollection = !state.refreshUsersCollection;
+      return {
+        ...state,
+        refreshUsersCollection: refreshUsersCollection
       }
     default:
       return state;

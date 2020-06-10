@@ -14,7 +14,7 @@ function mapStateToProps(state){
   return{
     show: state.job.jobModalShow,
     jobId: state.job.editJobId,
-    refreshUsersCollection: state.user.refreshUsersCollection
+    refreshUsersCollection: state.refreshControls.refreshUsersCollection
   }
 }
 

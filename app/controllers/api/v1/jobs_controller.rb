@@ -55,7 +55,9 @@ class Api::V1::JobsController < Api::V1::BaseController
 	def create
     job = current_user.jobs.build(job_params)
     if job.save
-      render json: Api::V1::JobSerializer.new(job).to_custom_hash
+      job_json = Api::V1::JobSerializer.new(job).to_custom_hash
+      ActionCable.server.broadcast('jobs_channel', {job: job_json, user_id: current_user.id})
+      render json: job_json
     else
       error!({error: job.errors}, 422)
     end
@@ -65,7 +67,9 @@ class Api::V1::JobsController < Api::V1::BaseController
     error!({error: ["You don't have the permission!"]}) unless current_user.admin?
 		job = Job.find(params[:id])
     if job.update!(job_params)
-      render json: Api::V1::JobSerializer.new(job).to_custom_hash
+      job_json = Api::V1::JobSerializer.new(job).to_custom_hash
+      ActionCable.server.broadcast('jobs_channel', {job: job_json, user_id: current_user.id})
+      render json: job_json
     else
       error!({error: job.errors}, 422)
     end

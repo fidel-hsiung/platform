@@ -19,15 +19,13 @@ export default {
     jobViewId:                null,
     jobEditId:                null
   },
-  user: {
-    refreshUsersCollection:   false
-  },
   refreshControls: {
     calendarStartDay:         null,
     calendarEndDay:           null,
     refreshCalendar:          false,
     jobsDay:                  null,
     refreshDayJobsList:       false,
-    refreshJobsList:          false
+    refreshJobsList:          false,
+    refreshUsersCollection:   false
   }
 }

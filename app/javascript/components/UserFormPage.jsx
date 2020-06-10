@@ -5,7 +5,7 @@ import { processResponse } from 'middlewares/custom';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { openModalBox } from 'actions/modalBoxActions';
-import { logout } from 'actions/currentUserActions';
+import { login, logout } from 'actions/currentUserActions';
 import DefaultAvatar from 'images/default-user.png';
 import LoadingPage from 'components/LoadingPage';
 import { FormImageUpload, FormInput, FormSelect } from 'components/CustomFormComponents';
@@ -17,7 +17,7 @@ function mapStateToProps(state){
 }
 
 function mapDispatchToProps(dispatch) {
-  return bindActionCreators({openModalBox, logout}, dispatch)
+  return bindActionCreators({openModalBox, login, logout}, dispatch)
 }
 
 const emptyUser = {
@@ -141,7 +141,10 @@ class UserFormPage extends React.Component {
     })
     .then(processResponse)
     .then(response => {
-      this.props.history.push('/users/'+response.data.id)
+      if (this.props.currentUserId == response.data.id) {
+        this.props.login(response.data);
+      }
+      this.props.history.push('/users/'+response.data.id);
     })
     .catch(response => {
       if (response.status == 401){

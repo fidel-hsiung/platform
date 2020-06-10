@@ -27,6 +27,7 @@ class Api::V1::UsersController < Api::V1::BaseController
     user = User.new(user_params.merge(password: generated_password, password_confirmation: generated_password))
     if user.save
       SystemMailer.welcome_user(user.full_name, user.email, generated_password).deliver_later
+      ActionCable.server.broadcast('users_channel', {action_type: 'create'})
       render json: Api::V1::UserSerializer.new(user).to_custom_hash
     else
       error!({error: user.errors}, 422)
@@ -40,9 +41,10 @@ class Api::V1::UsersController < Api::V1::BaseController
   end
 
   def update
-    error!({error: ["You don't have the permission!"]}) unless current_user.admin? || current_user.id == params[:id]
+    return error!({error: ["You don't have the permission!"]}) unless current_user.admin? || current_user.id == params[:id].to_i
     user = User.find(params[:id])
     if user.update(user_params)
+      ActionCable.server.broadcast('users_channel', {action_type: 'update'})
       render json: Api::V1::UserSerializer.new(user).to_custom_hash
     else
       error!({error: user.errors}, 422)

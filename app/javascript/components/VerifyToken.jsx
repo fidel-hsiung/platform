@@ -8,7 +8,7 @@ import { processResponse } from 'middlewares/custom';
 export default function VerifyToken(props) {
 
   const [redirect, setRedirect] = useState(false);
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
     fetch('/api/v1/user-info', {
@@ -27,11 +27,11 @@ export default function VerifyToken(props) {
     });
   }, [])
 
-  if (redirect) {  
+  if (redirect) {
     return(
       <Redirect to="/login" />
     );
-  } else {    
+  } else {
     return (
       <LoadingPage />
     );

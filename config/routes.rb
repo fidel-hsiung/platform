@@ -26,5 +26,5 @@ Rails.application.routes.draw do
   	get       '*path',                                to: 'v1/general#url_error'
   end
 
-  get '*path', to: 'pages#home'
+  get '*path', to: 'pages#home', constraints: lambda { |req| !req.path.start_with?('/rails') }
 end

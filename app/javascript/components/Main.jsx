@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Switch, Route, Redirect, useHistory } from 'react-router-dom';
 import CalendarPage from 'components/CalendarPage';
@@ -13,13 +13,39 @@ import LeftSideNav from 'components/LeftSideNav';
 import VerifyToken from 'components/VerifyToken';
 import JobModal from 'components/JobModal';
 import JobView from 'components/JobView';
+import actionCable from 'actioncable';
+import { useDispatch } from 'react-redux';
+import { checkJobRefresh, refreshUsersCollection } from 'actions/refreshControlsActions';
+
+const CableApp = {}
 
 export default function Main(props) {
 
-  const authenticated = useSelector(state => state.currentUser.email != null);
+  const currentUserId = useSelector(state => state.currentUser.id);
   const history = useHistory();
+  const dispatch = useDispatch();
 
-  if (authenticated) {
+  useEffect(()=>{
+    if (currentUserId) {
+      CableApp.cable = actionCable.createConsumer('/cable?token=' + localStorage.getItem('authToken'));
+      CableApp.users = CableApp.cable.subscriptions.create({channel: "UsersChannel"}, {
+        received: (data) => {
+          console.log('receving user channel');
+          dispatch(refreshUsersCollection());
+        }
+      });
+      CableApp.jobs = CableApp.cable.subscriptions.create({channel: "JobsChannel"}, {
+        received: (data) => {
+          console.log('receving job channel');
+          if (data.user_id != currentUserId){
+            dispatch(checkJobRefresh(data.job));
+          }
+        }
+      });
+    }
+  }, [currentUserId]);
+
+  if (currentUserId) {
     return(
       <React.Fragment>
         <Header />
