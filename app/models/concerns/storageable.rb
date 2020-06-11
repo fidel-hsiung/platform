@@ -6,7 +6,7 @@ module Storageable
     def has_one_customized_attached(attach_sttr, **options)
 
       attach_attr_string = attach_sttr.to_s
-      attach_type = options[:type] || 'image'
+      attach_type = options[:type]
       attach_required = options[:required]
       attach_require_condition = options[:require_condition]
       attach_size_limit = options[:size_limit]&.to_i
@@ -27,7 +27,7 @@ module Storageable
 
         def check_#{attach_attr_string}
           if #{attach_attr_string}.attached?
-            if !(#{attach_attr_string}.content_type =~ %r(#{attach_type}))
+            if #{attach_type.present?} && !(#{attach_attr_string}.content_type =~ %r(#{attach_type}))
               errors.add(:#{attach_attr_string}, "not a valid #{attach_type} format")
               #{attach_attr_string}.attachment.try(:destroy)
               self.#{attach_attr_string} = nil
@@ -37,10 +37,10 @@ module Storageable
               self.#{attach_attr_string} = nil
             end
           else
-            if #{attach_required.present? && attach_required == true}
-              errors.add(:#{attach_attr_string}, "cannot be blank")
+            if #{attach_required == true}
+              errors.add(:#{attach_attr_string}, "can't be blank")
             elsif #{attach_require_condition.present? ? attach_require_condition : false}
-              errors.add(:#{attach_attr_string}, "cannot be blank")
+              errors.add(:#{attach_attr_string}, "can't be blank")
             end
           end
         end

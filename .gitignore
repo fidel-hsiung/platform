@@ -35,3 +35,5 @@ coverage
 
 # Ignore MacOX auto-generated file
 *.DS_Store
+
+/config/credentials/test.key

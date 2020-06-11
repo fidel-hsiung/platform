@@ -3,7 +3,7 @@ class User < ApplicationRecord
   attr_accessor :password_confirmation
 
   has_secure_password
-  has_one_customized_attached :avatar, default: 'media/images/default-user.png'
+  has_one_customized_attached :avatar, type: 'image', default: 'media/images/default-user.png'
 
   has_many :jobs
   has_many :user_jobs
