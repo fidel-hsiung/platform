@@ -50,8 +50,8 @@ Implementations
 
 To be finished:
 
-Forgot password feature
+* Forgot password feature
 
-Docker
+* Docker
 
-Log system to record all users operation history.
+* Log system to record all users operation history.
