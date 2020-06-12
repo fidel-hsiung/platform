@@ -1,4 +1,5 @@
 class Api::V1::JobsController < Api::V1::BaseController
+  before_action :check_permission, only: [:create, :update]
 
   def index
     start_date = params[:start_date].present? ? params[:start_date].to_date : ''
@@ -13,8 +14,8 @@ class Api::V1::JobsController < Api::V1::BaseController
       statuses: statuses,
       start_date: start_date,
       end_date: end_date,
-      attendee_ids: params[:attendee_ids] || [],
-      creator_ids: params[:creator_ids] || []
+      attendee_ids: attendee_ids,
+      creator_ids: creator_ids
     }).result
 
     sort_by = params[:sort_by].in?(%w(id name job_number start_date status users_count)) ? params[:sort_by] : 'id'
@@ -64,9 +65,8 @@ class Api::V1::JobsController < Api::V1::BaseController
 	end
 
 	def update
-    error!({error: ["You don't have the permission!"]}) unless current_user.admin?
 		job = Job.find(params[:id])
-    if job.update!(job_params)
+    if job.update(job_params)
       job_json = Api::V1::JobSerializer.new(job).to_custom_hash
       ActionCable.server.broadcast('jobs_channel', {job: job_json, user_id: current_user.id})
       render json: job_json

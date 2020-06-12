@@ -2,6 +2,9 @@ require 'rails_helper'
 
 RSpec.describe 'Api::V1::Jobs', type: :request do
 
+  let(:job) {create(:job_with_users)}
+  let(:admin_user) {create(:admin_user)}
+
   describe 'Jobs List' do
     before do
       @jobs = []
@@ -15,6 +18,18 @@ RSpec.describe 'Api::V1::Jobs', type: :request do
     end
 
     describe 'Get /jobs' do
+      it 'should render json' do
+        temp = double()
+        expect(JobFilter).to receive(:new).with(name: nil, job_number: nil, statuses: [], start_date: '', end_date: '', attendee_ids: [], creator_ids: []).and_return(temp)
+        expect(temp).to receive(:result).and_return(Job.includes(users: {avatar_attachment: :blob}).left_joins(:user_jobs).distinct)
+
+        get '/api/v1/jobs', params: {page: '1', sort_by: 'id', sort_method: 'desc'}, headers: headers
+
+        expect(response).to be_successful
+        expect(json['jobs'].count).to eq 5
+        expect(json['jobs'].map{|job| job['id']}).to eq [@jobs[4].id, @jobs[3].id, @jobs[2].id, @jobs[1].id, @jobs[0].id]
+        expect(json['total_pages']).to eq 1
+      end
     end
 
     describe 'Get /calendar-jobs' do
@@ -98,4 +113,117 @@ RSpec.describe 'Api::V1::Jobs', type: :request do
     end
   end
 
+  describe 'Get /jobs/:id' do
+    it 'should render json' do
+      get "/api/v1/jobs/#{job.id}", headers: headers
+
+      expect(response).to be_successful
+      expect(json['id']).to eq job.id
+      expect(json['job_number']).to eq job.job_number
+      expect(json['name']).to eq job.name
+      expect(json['location']).to eq job.location
+      expect(json['body']).to eq job.body
+      expect(json['status']).to eq job.status
+      expect(json['start_date']).to eq job.start_date.to_s
+      expect(json['end_date']).to eq job.end_date.to_s
+      expect(json['users'].count).to eq job.users.size
+      expect(json['users'].first['id']).to eq job.users.first.id
+      expect(json['users_count']).to eq job.users.size
+      expect(json['user_jobs_attributes']).to eq []
+      expect(json['user_ids']).to eq job.users.ids
+    end
+  end
+
+  describe 'Get /jobs/:id/edit' do
+    it 'should render json' do
+      get "/api/v1/jobs/#{job.id}/edit", headers: headers
+
+      expect(response).to be_successful
+      expect(json['id']).to eq job.id
+      expect(json['job_number']).to eq job.job_number
+      expect(json['name']).to eq job.name
+      expect(json['location']).to eq job.location
+      expect(json['body']).to eq job.body
+      expect(json['status']).to eq job.status
+      expect(json['start_date']).to eq job.start_date.to_s
+      expect(json['end_date']).to eq job.end_date.to_s
+      expect(json['users']).to eq []
+      expect(json['users_count']).to eq 0
+      expect(json['user_jobs_attributes'].count).to eq job.user_jobs.count
+      expect(json['user_jobs_attributes'].first['id']).to eq job.user_jobs.first.id
+      expect(json['user_ids']).to eq job.users.ids
+    end
+
+    it 'should rescue from not found and return error' do
+      get '/api/v1/jobs/0/edit', headers: headers
+
+      expect(response.status).to eq 404
+      expect(json).to eq ({'error' => ['Could not find the object.']})
+    end
+  end
+
+  describe 'Post /jobs' do
+    it 'should return error if not admin user' do
+      post '/api/v1/jobs', params: {job: FactoryBot.attributes_for(:job_with_users)}, headers: headers
+
+      expect(response.status).to eq 401
+      expect(json).to eq ({'error' => ['You don\'t have the permission!']})
+    end
+
+    it 'should call ActionCable and render json' do
+      expect(Api::V1::JobSerializer).to receive_message_chain(:new, :to_custom_hash).and_return({test: 'test'})
+      expect(ActionCable.server).to receive(:broadcast).with('jobs_channel', {job: {test: 'test'}, user_id: admin_user.id})
+      post '/api/v1/jobs', params: {job: FactoryBot.attributes_for(:job_with_users)}, headers: headers(admin_user)
+
+      expect(response).to be_successful
+      expect(json).to eq ({'test' => 'test'})
+    end
+
+    it 'should error with invalid params' do
+      expect(ActionCable.server).to_not receive(:broadcast)
+      post '/api/v1/jobs', params: {job: FactoryBot.attributes_for(:job_with_users, name: '')}, headers: headers(admin_user)
+
+      expect(response.status).to eq 422
+      expect(json).to eq ({'error' => {'name' => ['can\'t be blank']}})
+    end
+  end
+
+  describe 'Put /jobs/:id' do
+    it 'should return error if not admin user' do
+      put "/api/v1/jobs/#{job.id}", params: {job: {name: 'Test Name'}}, headers: headers
+
+      expect(response.status).to eq 401
+      expect(json).to eq ({'error' => ['You don\'t have the permission!']})
+    end
+
+    it 'should update job, call ActionCable and render json' do
+      expect(Api::V1::JobSerializer).to receive_message_chain(:new, :to_custom_hash).and_return({test: 'test'})
+      expect(ActionCable.server).to receive(:broadcast).with('jobs_channel', {job: {test: 'test'}, user_id: admin_user.id})
+      expect do
+        put "/api/v1/jobs/#{job.id}", params: {job: {name: 'Test Name'}}, headers: headers(admin_user)
+      end.to change{job.reload.name}.to('Test Name')
+
+      expect(response).to be_successful
+      expect(json).to eq ({'test' => 'test'})
+    end
+
+    it 'should not update job and return error with invalid params' do
+      expect(ActionCable.server).to_not receive(:broadcast)
+      expect do
+        put "/api/v1/jobs/#{job.id}", params: {job: {name: ''}}, headers: headers(admin_user)
+      end.to_not change{job.reload}
+
+      expect(response.status).to eq 422
+      expect(json).to eq ({'error' => {'name' => ['can\'t be blank']}})
+    end
+
+    it 'should rescue from exception and return error' do
+      expect(Job).to receive(:find).and_raise(Exception.new('test'))
+
+      put "/api/v1/jobs/#{job.id}", params: {job: {name: 'Test Name'}}, headers: headers(admin_user)
+
+      expect(response.status).to eq 500
+      expect(json).to eq ({'error' => ['Server error.']})
+    end
+  end
 end

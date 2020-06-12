@@ -1,5 +1,6 @@
 class Api::V1::UsersController < Api::V1::BaseController
 	skip_before_action :authenticate!, only: [:create, :sign_in, :reset_password]
+  before_action :check_permission, only: [:create]
 
   def index
     roles = params[:roles].present? ? params[:roles].select(&:present?) : []
@@ -41,7 +42,7 @@ class Api::V1::UsersController < Api::V1::BaseController
   end
 
   def update
-    return error!({error: ["You don't have the permission!"]}) unless current_user.admin? || current_user.id == params[:id].to_i
+    return error!({error: ["You don't have the permission!"]}, 401) unless current_user.admin? || current_user.id == params[:id].to_i
     user = User.find(params[:id])
     if user.update(user_params)
       ActionCable.server.broadcast('users_channel', {action_type: 'update'})

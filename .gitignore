@@ -21,8 +21,8 @@
 .byebug_history
 
 # Ignore master key for decrypting credentials and more.
-/config/credentials/production.key
 /config/credentials/development.key
+/config/credentials/production.key
 
 /public/packs
 /public/packs-test
@@ -35,5 +35,3 @@ coverage
 
 # Ignore MacOX auto-generated file
 *.DS_Store
-
-/config/credentials/test.key

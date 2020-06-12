@@ -16,7 +16,7 @@ class User < ApplicationRecord
   before_save :downcase_email
   before_save :format_names
 
-  enum role: {employee: 0, contract: 1, admin: 2}
+  enum role: {employee: 0, contractor: 1, admin: 2}
 
   scope :unarchived, -> { where(archived: false) }
 

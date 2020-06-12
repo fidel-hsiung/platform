@@ -192,7 +192,7 @@ class UserFormPage extends React.Component {
             }
             <FormInput label='First Name' placeholder='Enter user first name' value={this.state.user.first_name} handleChange={value => this.handleInputChange(value, 'first_name')} error={this.state.user.errors.first_name} />
             <FormInput label='Last Name' placeholder='Enter user last name' value={this.state.user.last_name} handleChange={value => this.handleInputChange(value, 'last_name')} error={this.state.user.errors.last_name} />
-            <FormSelect label='Role' placeholder='Select user role' value={this.state.user.role} options={[{value: 'employee', label: 'Employee'}, {value: 'contract', label: 'Contract'}, {value: 'admin', label: 'Admin'}]} handleChange={value=>this.handleInputChange(value, 'role')} error={this.state.user.errors.role} />
+            <FormSelect label='Role' placeholder='Select user role' value={this.state.user.role} options={[{value: 'employee', label: 'Employee'}, {value: 'contractor', label: 'Contractor'}, {value: 'admin', label: 'Admin'}]} handleChange={value=>this.handleInputChange(value, 'role')} error={this.state.user.errors.role} />
             <FormSelect label='Archived' placeholder='Select user archived' value={this.state.user.archived} options={[{value: '1', label: 'True'}, {value: '0', label: 'False'}]} handleChange={value=>this.handleInputChange(value, 'archived')} error={this.state.user.errors.archived} />
             <div className='form-actions'><Button type="submit">Submit</Button></div>
           </Form>

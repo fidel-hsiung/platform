@@ -69,4 +69,8 @@ class Api::V1::BaseController < ActionController::API
   def set_host_for_local_storage
     ActiveStorage::Current.host = request.base_url unless Rails.application.config.active_storage.service == :amazon
   end
+
+  def check_permission
+    return error!({error: ["You don't have the permission!"]}, 401) unless current_user&.admin?
+  end
 end

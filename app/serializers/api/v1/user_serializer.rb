@@ -13,26 +13,18 @@ class Api::V1::UserSerializer < Api::V1::BaseSerializer
   end
 
   attribute :assigned_jobs_count do |user, params|
-    if params[:include_jobs]
-      user.assigned_jobs.size
-    end
+    params[:include_jobs] ? user.assigned_jobs.size : 0
   end
 
   attribute :assigned_active_jobs_count do |user, params|
-    if params[:include_jobs]
-      user.assigned_jobs.select(&:active?).size
-    end
+    params[:include_jobs] ? user.assigned_jobs.select(&:active?).size : 0
   end
 
   attribute :assigned_failed_jobs_count do |user, params|
-    if params[:include_jobs]
-      user.assigned_jobs.select(&:failed?).size
-    end
+    params[:include_jobs] ? user.assigned_jobs.select(&:failed?).size : 0
   end
 
   attribute :assigned_finished_jobs_count do |user, params|
-    if params[:include_jobs]
-      user.assigned_jobs.select(&:finished?).size
-    end
+    params[:include_jobs] ? user.assigned_jobs.select(&:finished?).size : 0
   end
 end
