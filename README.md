@@ -2,7 +2,7 @@
 
 This is a project management platform built with Rails + React. Admins can create jobs and assign to users. Users can only view jobs. Admins have the permission for jobs CRUD, users CRUD. Users only have the permission for jobs read, and users read, however, they can modify their own profile.
 
-Note! The development key is ignored when upload to Github, you have to generate your own key, and insert the `google_place_key` and `secret_key_base`.
+Note! The credentials key is ignored when upload to Github, you have to generate your own key, and insert the `google_place_key` and `secret_key_base`.
 
 
 System configurations:
