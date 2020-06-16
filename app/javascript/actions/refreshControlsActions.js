@@ -1,12 +1,12 @@
 import {
-	SET_CALENDAR_DATES,
+  SET_CALENDAR_DATES,
   SET_JOBS_DATE,
   CHECK_JOB_REFRESH,
   REFRESH_USERS_COLLECTION
 } from '../constants/actionTypes';
 
 export const setCalendarDates = (payload) => {
-	return {type: SET_CALENDAR_DATES, payload};
+  return {type: SET_CALENDAR_DATES, payload};
 }
 
 export const setJobsDate = (payload) => {

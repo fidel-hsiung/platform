@@ -2,19 +2,19 @@ class Api::V1::BaseSerializer
   include FastJsonapi::ObjectSerializer
 
   set_id :id
-  
-  def to_custom_hash
-  	data = serializable_hash
 
-  	if data[:data].is_a? Hash
-  		data[:data][:attributes]
-  	elsif data[:data].is_a? Array
-  		data[:data].map{ |m| m[:attributes] }
-  	elsif data[:data].nil?
-  		nil
-  	else
-  		data
-  	end
+  def to_custom_hash
+    data = serializable_hash
+
+    if data[:data].is_a? Hash
+      data[:data][:attributes]
+    elsif data[:data].is_a? Array
+      data[:data].map{ |m| m[:attributes] }
+    elsif data[:data].nil?
+      nil
+    else
+      data
+    end
   end
 
   # class << self
@@ -32,6 +32,6 @@ class Api::V1::BaseSerializer
   #     attribute resources do |object|
   #       serializer.new(object.try(resources)).to_custom_hash
   #     end
-  # 	end
+  #   end
   # end
 end

@@ -10,7 +10,7 @@ export const newJob = () => {
 };
 
 export const viewJob = (payload) => {
-	return {type: VIEW_JOB, payload};
+  return {type: VIEW_JOB, payload};
 }
 
 export const editJob = (payload) =>{

@@ -1,15 +1,15 @@
 class Job < ApplicationRecord
-	belongs_to :user
+  belongs_to :user
 
-	has_many :user_jobs, dependent: :destroy
-	has_many :users, through: :user_jobs
+  has_many :user_jobs, dependent: :destroy
+  has_many :users, through: :user_jobs
 
   accepts_nested_attributes_for :user_jobs, allow_destroy: true
 
-	enum status: {pending: 0, active: 1, finished: 2, failed: 3}
+  enum status: {pending: 0, active: 1, finished: 2, failed: 3}
 
-	validates :name, :location, :body, :status, presence: true
-	validates :start_date, :end_date, :job_number, presence: true, unless: :pending?
+  validates :name, :location, :body, :status, presence: true
+  validates :start_date, :end_date, :job_number, presence: true, unless: :pending?
   validates_uniqueness_of :job_number, unless: :pending?
   validate :start_date_valid?, on: :create
   validate :end_date_valid?

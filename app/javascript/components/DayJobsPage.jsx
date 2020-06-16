@@ -139,7 +139,7 @@ class DayJobsPage extends React.Component {
               <div className={'label-date'}>{this.state.day}</div>
               <FaCaretRight style={{cursor: 'pointer'}} onClick={()=>this.goToNextDay()} />
             </div>
-            <Form.Check className='text-primary' inline label='Only view my jobs' onChange={e=>this.handleOnlyViewMyJobsChange(e)} checked={this.state.onlyViewMyJobs} />
+            <Form.Check className='text-secondary' id='my-jobs' inline label='Only view my jobs' onChange={e=>this.handleOnlyViewMyJobsChange(e)} checked={this.state.onlyViewMyJobs} />
           </div>
           <Table responsive bordered hover className='job-table'>
             <thead>

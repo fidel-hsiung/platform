@@ -9,9 +9,9 @@ export default {
     role:                     null
   },
   modalBox: {
-  	show:                     false,
-  	title:                    '',
-  	content:                  ''
+    show:                     false,
+    title:                    '',
+    content:                  ''
   },
   job: {
     jobModalShow:             false,

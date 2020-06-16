@@ -21,17 +21,17 @@ class User < ApplicationRecord
   scope :unarchived, -> { where(archived: false) }
 
   def full_name
-  	"#{first_name} #{last_name}"
+    "#{first_name} #{last_name}"
   end
 
   private
 
   def downcase_email
-  	self.email = email.downcase.strip if email_changed?
+    self.email = email.downcase.strip if email_changed?
   end
 
   def format_names
-  	self.first_name = first_name.strip.upcase_first if first_name_changed?
-  	self.last_name = last_name.strip.upcase_first if last_name_changed?
+    self.first_name = first_name.strip.upcase_first if first_name_changed?
+    self.last_name = last_name.strip.upcase_first if last_name_changed?
   end
 end

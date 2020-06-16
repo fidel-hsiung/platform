@@ -17,7 +17,7 @@ export default function FormExample(props) {
   const handleSubmit = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     const data = {email: email, password: password, remember_me: rememberMe};
 
     fetch('/api/v1/sign-in', {
@@ -62,6 +62,8 @@ export default function FormExample(props) {
         <Form.Check
           name="rememberMe"
           label="Remember me"
+          id="remember-me"
+          type="checkbox"
           onChange={e=>setRememberMe(e.target.checked)}
           checked={rememberMe}
         />

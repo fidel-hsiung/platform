@@ -28,13 +28,13 @@ class Api::V1::JobsController < Api::V1::BaseController
     render json: {jobs: Api::V1::JobSerializer.new(sorted_jobs, params: {include_users: true}).to_custom_hash, total_pages: total_pages}
   end
 
-	def calendar_jobs
+  def calendar_jobs
     return error!({error: ['Date cannot be blank!']}, 422) unless params[:calendar_day].present?
     calendar_day = params[:calendar_day].to_date
     jobs = Job.calendar(calendar_day)
 
     render json: {jobs: Api::V1::JobSerializer.new(jobs).to_custom_hash, calendar_dates: {start_date: calendar_day.beginning_of_month.beginning_of_week, end_date: calendar_day.end_of_month.end_of_week}}
-	end
+  end
 
   def day_jobs
     day = params[:day].present? ? params[:day].to_date : Date.current
@@ -43,17 +43,17 @@ class Api::V1::JobsController < Api::V1::BaseController
     render json: {jobs: Api::V1::JobSerializer.new(jobs, params: {include_users: true}).to_custom_hash, day: day}
   end
 
-	def show
-		job = Job.includes(users: {avatar_attachment: :blob}).find(params[:id])
-		render json: Api::V1::JobSerializer.new(job, params: {include_users: true}).to_custom_hash
-	end
+  def show
+    job = Job.includes(users: {avatar_attachment: :blob}).find(params[:id])
+    render json: Api::V1::JobSerializer.new(job, params: {include_users: true}).to_custom_hash
+  end
 
-	def edit
-		job = Job.includes(users: {avatar_attachment: :blob}).find(params[:id])
-		render json: Api::V1::JobSerializer.new(job, params: {include_user_jobs_attributes: true}).to_custom_hash
-	end
+  def edit
+    job = Job.includes(users: {avatar_attachment: :blob}).find(params[:id])
+    render json: Api::V1::JobSerializer.new(job, params: {include_user_jobs_attributes: true}).to_custom_hash
+  end
 
-	def create
+  def create
     job = current_user.jobs.build(job_params)
     if job.save
       job_json = Api::V1::JobSerializer.new(job).to_custom_hash
@@ -62,10 +62,10 @@ class Api::V1::JobsController < Api::V1::BaseController
     else
       error!({error: job.errors}, 422)
     end
-	end
+  end
 
-	def update
-		job = Job.find(params[:id])
+  def update
+    job = Job.find(params[:id])
     if job.update(job_params)
       job_json = Api::V1::JobSerializer.new(job).to_custom_hash
       ActionCable.server.broadcast('jobs_channel', {job: job_json, user_id: current_user.id})
@@ -73,12 +73,12 @@ class Api::V1::JobsController < Api::V1::BaseController
     else
       error!({error: job.errors}, 422)
     end
-	end
+  end
 
-	private
+  private
 
-	def job_params
+  def job_params
     params.require(:job).permit(:name, :status, :job_number, :location, :start_date, :end_date, :body,
       user_jobs_attributes: [:id, :user_id, :_destroy])
-	end
+  end
 end

@@ -8,11 +8,11 @@ import Main from 'components/Main';
 export default function App(props) {
 
   return(
-  	<Provider store={store} >
+    <Provider store={store} >
       <ModalBox />
-	    <BrowserRouter>
+      <BrowserRouter>
         <Main />
-	    </BrowserRouter>
-	   </Provider>
+      </BrowserRouter>
+     </Provider>
   );
 }

@@ -54,7 +54,7 @@ class CalendarPage extends React.Component {
   }
 
   getCalendarEvents(date){
-  	let url = '/api/v1/calendar-jobs?calendar_day='+moment(date).format('YYYY-MM-DD');
+    let url = '/api/v1/calendar-jobs?calendar_day='+moment(date).format('YYYY-MM-DD');
     fetch(url, {
       method: 'GET',
       headers: {
@@ -70,11 +70,11 @@ class CalendarPage extends React.Component {
       this.props.setCalendarDates(response.data.calendar_dates);
     })
     .catch(response => {
-			if (response.status == 401){
+      if (response.status == 401){
         localStorage.removeItem('authToken');
         this.props.logout()
-			}
-			this.props.openModalBox('Error', response.data.error.join(','));
+      }
+      this.props.openModalBox('Error', response.data.error.join(','));
     });
   }
 
@@ -140,16 +140,16 @@ class CalendarPage extends React.Component {
     this.props.history.push('/day#'+moment(e).format("YYYY-MM-DD"));
   }
 
-	render() {
+  render() {
     if (this.state.jobs){
-  	  return(
-  	  	<div className='page-main-content calendar-page'>
+      return(
+        <div className='page-main-content calendar-page'>
           <div className='page-content-header calendar-header'>
             <div className='job-filter'>
               <div className='filter-title'>Job Filter:</div>
-              <Form.Check name='active' className='text-danger' inline label='active' onChange={e=>this.handleCheckboxClick(e)} checked={this.state.statuses.includes('active')} />
-              <Form.Check name='finished' className='text-success' inline label='finished' onChange={e=>this.handleCheckboxClick(e)} checked={this.state.statuses.includes('finished')} />
-              <Form.Check name='failed' className='text-secondary' inline label='failed' onChange={e=>this.handleCheckboxClick(e)} checked={this.state.statuses.includes('failed')} />
+              <Form.Check name='active' id='job-active' className='text-danger' inline label='active' onChange={e=>this.handleCheckboxClick(e)} checked={this.state.statuses.includes('active')} />
+              <Form.Check name='finished' id='job-finished' className='text-success' inline label='finished' onChange={e=>this.handleCheckboxClick(e)} checked={this.state.statuses.includes('finished')} />
+              <Form.Check name='failed' id='job-failed' className='text-secondary' inline label='failed' onChange={e=>this.handleCheckboxClick(e)} checked={this.state.statuses.includes('failed')} />
             </div>
             {this.props.role == 'admin' &&
               <Button variant="info" onClick={() => this.props.newJob()}>
@@ -157,13 +157,13 @@ class CalendarPage extends React.Component {
               </Button>
             }
           </div>
-  		    <Calendar
-  		      className='jobs-calendar'
-  		      localizer={localizer}
+          <Calendar
+            className='jobs-calendar'
+            localizer={localizer}
             views={['month']}
-  		      events={this.filteredJobs()}
-  		      startAccessor='start_date'
-  		      endAccessor='end_date'
+            events={this.filteredJobs()}
+            startAccessor='start_date'
+            endAccessor='end_date'
             titleAccessor='name'
             popup={true}
             onDrillDown={e=>this.handleViewDay(e)}
@@ -174,13 +174,13 @@ class CalendarPage extends React.Component {
             }
             eventPropGetter={this.eventStyleGetter}
             onSelectEvent={(job, e) => this.props.viewJob(job.id)}
-  		    />
-  		  </div>
-  	  );
+          />
+        </div>
+      );
     } else {
       return <LoadingPage />;
     }
-	}
+  }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(CalendarPage);
